@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>加强件仓储管理</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/storage.css">
+    <link rel="stylesheet" href="css/mui.min.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style type="text/css">
+        #slide3_StoresTypeDiv{
+            width: 100%;
+            height: 44px;
+            border: 1px solid #cccccc;
+            outline: none;
+            font-family: '微软雅黑';
+            font-size: 18px;
+            padding: 0;
+            margin-left: -10%;
+        }
+        #slide3_StoresType_input{
+            width: 100%;
+            height: 40px;
+        }
+        #form_jiaoliao td{
+            font-family: '微软雅黑';
+            font-size: 16px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body style="overflow: hidden">
+<div id="wrap-content" style="overflow: hidden;background: #ffffff;">
+    <div class="container tabDiv">
+        <div class="row">
+            <div class="col-xs-2 tab-item" style="margin-left: 10px;">
+                <p class="tab-p text-center active">叫料任务</p>
+            </div>
+            <div class="col-xs-2 tab-item">
+                <p class="tab-p text-center">库存</p>
+            </div>
+            <div class="col-xs-2 tab-item">
+                <p class="tab-p text-center">入库管理</p>
+            </div>
+            <div class="col-xs-2 tab-item">
+                <p class="tab-p text-center">出库管理</p>
+            </div>
+            <div class="col-xs-2 tab-item">
+                <p class="tab-p text-center">填充绳入库</p>
+            </div>
+        </div>
+    </div>
+    <div class="swiper-container" style="margin-top: 10px;">
+        <div class="swiper-wrapper">
+            <!--叫料任务 slide1-->
+            <div class="swiper-slide">
+                <div class="panel-body" style="padding: 0px;">
+                    <table id="header_table" class="table table-bordered" style="table-layout:fixed;">
+                        <thead>
+                        <tr>
+                            <th style="width: 45px;"></th>
+                            <th style="font-size: 14px;width: 100px;">叫料工位</th>
+                            <th style="font-size: 14px;">加强件编号</th>
+                            <th style="font-size: 14px;">规格型号</th>
+                            <th style="font-size: 14px;">供应商</th>
+                            <th style="font-size: 14px;">批次</th>
+                            <th style="font-size: 14px;">重量(kg)</th>
+                            <th style="font-size: 14px;">叫料时间</th>
+                            <th style="font-size: 14px;width: 80px;">取料方式</th><!-- 1--AGV; 2--人工-->
+                        </tr>
+                        </thead>
+                    </table>
+                    <div id="query-tableDiv" style="overflow-y: auto;margin-top: -20px">
+                        <table id="jiaoliao_table" class="table table-bordered" style="table-layout:fixed;">
+                            <tbody id="form_jiaoliao">
+                            <script type="text/template" charset="UTF-8" id="template1">
+                                {{if(it && it.length>0){}}
+                                    {{for(var i=0; i < it.length; i++){}}
+                                        <tr class="task" id="taskjq{{=(i+1)}}">
+                                            <th class="index-th" scope="row" style="width: 45px;">{{=(i+1)}}</th>
+                                            <td class="antoLine" style="font-size: 14px;font-weight: normal;width: 100px;">{{=it[i].Mac_Code}}</td>
+                                            <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].JqjCode}}</td>
+                                            <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].JqjXh}}</td>
+                                            <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].SuppName}}</td>
+                                            <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].Pc}}</td>
+                                            <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].JqjWgt}}</td>
+                                            <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].ToFeed_date}}</td>
+                                            {{? it[i].DeliverType=="1" }}
+                                            <td class="antoLine" style="font-size: 11px;font-weight: normal;">AGV</td>
+                                            {{?? it[i].DeliverType=="2" }}
+                                            <td class="antoLine" style="font-size: 11px;font-weight: normal;width: 80px;">人工</td>
+                                            {{?}}
+                                            <td class="antoLine" style="display: none">{{=it[i].TackStatus}}</td>
+                                        </tr>
+                                    {{}}}
+                                {{}}}
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--库存 slide2--->
+            <div class="swiper-slide">
+                <div class="container queryDiv" style="padding: 0px;">
+                    <div class="row" style="margin: 0px;">
+                        <div class="col-xs-2 col-md-2 text-right" style="padding: 0px;">
+                            <p class="input-title">加强件编号</p>
+                        </div>
+                        <div class="col-xs-2 col-md-2" style="padding: 0px;">
+                            <input id="slide2_jqcode" class="query-input" type="text">
+                        </div>
+                        <div class="col-xs-2 col-md-2 text-right" style="padding: 0px;">
+                            <p class="input-title">加强件规格</p>
+                        </div>
+                        <div class="col-xs-2 col-md-2" style="padding: 0px;">
+                            <input id="slide2_jqgg" class="query-input" type="text">
+                        </div>
+                        <div class="col-xs-4 col-md-4 text-center">
+                            <button id="query-btn" class="center-block">查询</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 10px;">
+                    <table id="header_table2" class="table table-bordered" style="table-layout:fixed;display: none;">
+                        <thead>
+                        <tr>
+                            <th style="width: 45px;"></th>
+                            <th style="font-size: 14px;">加强件编号</th>
+                            <th style="font-size: 14px;">规格型号</th>
+                            <th style="font-size: 14px;">供应商</th>
+                            <th style="font-size: 14px;">批次</th>
+                            <th style="font-size: 14px;">重量(kg)</th>
+                            <th style="font-size: 14px;">库位编号</th>
+                            <th style="font-size: 14px;">库位类别</th>
+                            <th style="font-size: 14px;width: 135px;">入库时间</th>
+                            <th style="font-size: 14px;width: 60px;">备注</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div id="query-tableDiv2" style="overflow-y: auto;margin-top: -20px">
+                        <table class="table table-bordered" style="table-layout:fixed;">
+                            <tbody id="formBody">
+                            <script type="text/template" charset="UTF-8" id="template_storage">
+                                {{if(it && it.length>0){}}
+                                {{for(var i=0; i < it.length; i++){}}
+                                <tr class="storage-task" id="task_daijian{{=(i+1)}}">
+                                    <th class="index-th" scope="row" style="width: 45px;">{{=(i+1)}}</th>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].JqjCode}}</td>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].JqjXh}}</td>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].SuppName}}</td>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].Pc}}</td>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].JqjWgt}}</td>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].ShelfNo}}</td>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;">{{=it[i].StoresType}}</td>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;width: 135px;">{{=it[i].StoreTime}}</td>
+                                    <td class="antoLine" style="font-size: 14px;font-weight: normal;width:60px;">{{=it[i].remark}}</td>
+                                </tr>
+                                {{}}}
+                                {{}}}
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--入库管理 slide3--->
+            <div id="slide3" class="swiper-slide">
+                <div class="container">
+                    <div class="row itemDiv2">
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">加强件编号：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide3_JqjCode" class="query-input2" type="text">
+                        </div>
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">重量(kg)：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide3_weight_input" class="query-input2" type="text">
+                        </div>
+                    </div>
+                    <div class="row itemDiv2">
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">规格型号：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide3_ggxh_input" class="query-input2" type="text" disabled="disabled" style="background: #e2e2e2;">
+                        </div>
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">库位编号：</p>
+                        </div>
+                        <div class="col-xs-2" style="padding: 0;">
+                            <input id="ShelfNo_input" class="query-input2" type="text">
+                        </div>
+                        <div class="col-xs-2">
+                            <button id="query-btn2">选择</button>
+                        </div>
+                    </div>
+                    <div class="row itemDiv2">
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">供应商：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide3_SuppName_input" class="query-input2" type="text" disabled="disabled" style="background: #e2e2e2;">
+                        </div>
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">库位类别：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <!--<input id="slide3_StoresType_input" class="query-input2" type="text">-->
+                            <div id="slide3_StoresTypeDiv">
+                                <select id="slide3_StoresType_input">
+                                    <option value=""></option>
+                                    <option value="1">手动库位</option>
+                                    <option value="2">自动库位</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row itemDiv2">
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">批次：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide3_Pc_input" class="query-input2 disable" type="text" disabled="disabled" style="background: #e2e2e2;">
+                        </div>
+                    </div>
+                    <div class="row itemDiv2" style="margin-top: 60px;">
+                        <div class="col-xs-4 col-md-4 text-right">
+                            <button id="sure-btn2">确定</button>
+                        </div>
+                        <div class="col-xs-4 col-md-4"></div>
+                        <div class="col-xs-4 col-md-4 text-left">
+                            <button id="cancel-btn2">清空</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--出库管理 slide4-->
+            <div class="swiper-slide">
+                <div class="container">
+                    <div class="row itemDiv2" style="margin-top: 100px;">
+                        <div class="col-xs-3">
+                            <p class="input-title2 text-right">加强件编号：</p>
+                        </div>
+                        <div class="col-xs-6">
+                            <input id="slide4_JqjCode_input" class="query-input2" type="text" style="margin-left: 0px;">
+                        </div>
+                    </div>
+                    <div class="row itemDiv2" style="margin-top: 60px;">
+                        <div class="col-xs-4 col-md-4 text-right">
+                            <button id="sure-btn3">确定</button>
+                        </div>
+                        <div class="col-xs-4 col-md-4"></div>
+                        <div class="col-xs-4 col-md-4 text-left">
+                            <button id="cancel-btn3">清空</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--填充绳入库-->
+            <div class="swiper-slide">
+                <div class="container">
+                    <div class="row itemDiv2">
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">输入编号：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide2_input_code" class="query-input2" type="text">
+                        </div>
+                    </div>
+                    <div class="row itemDiv2">
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">填充绳编号：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide2_TCS_Code" class="query-input2" type="text" disabled="disabled" style="background: #e2e2e2;">
+                        </div>
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">重量(kg)：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide2_weight" class="query-input2" type="text">
+                        </div>
+                    </div>
+                    <div class="row itemDiv2">
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">规格型号：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide2_xh" class="query-input2" type="text" disabled="disabled" style="background: #e2e2e2;">
+                        </div>
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">盘具编号：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide2_pan_code" class="query-input2" type="text" disabled="disabled" style="background: #e2e2e2;">
+                        </div>
+                    </div>
+                    <div class="row itemDiv2">
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">供应商：</p>
+                        </div>
+                        <div class="col-xs-4" style="padding: 0;">
+                            <input id="slide2_supplyName" class="query-input2" type="text" disabled="disabled" style="background: #e2e2e2;">
+                        </div>
+                        <div class="col-xs-2">
+                            <p class="input-title2 text-left">库位编号：</p>
+                        </div>
+                        <div class="col-xs-2" style="padding: 0;">
+                            <input id="ShelfNo_input5" class="query-input2" type="text">
+                        </div>
+                        <div class="col-xs-2">
+                            <button id="query-btn5">选择</button>
+                        </div>
+                    </div>
+                    <div class="row itemDiv2" style="margin-top: 60px;">
+                        <div class="col-xs-4 col-md-4 text-right">
+                            <button id="sure-btn5">确定</button>
+                        </div>
+                        <div class="col-xs-4 col-md-4"></div>
+                        <div class="col-xs-4 col-md-4 text-left">
+                            <button id="cancel-btn5">清空</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--loading-->
+<div id="loading" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+
+<!--actionsheet-->
+<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
+    <!-- 可选择菜单 -->
+    <ul class="mui-table-view">
+        <li class="mui-table-view-cell" onclick="receiveFinish()">
+            <a href="#">取料完成</a>
+        </li>
+    </ul>
+    <!-- 取消菜单 -->
+    <ul class="mui-table-view">
+        <li class="mui-table-view-cell">
+            <a href="#sheet1"><b>取消</b></a>
+        </li>
+    </ul>
+</div>
+
+<script type="text/javascript" src="js/doT.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript" src="js/mui.min.js"></script>
+<script type="text/javascript">
+    var template1;
+    var template;
+    var my_macno;
+    var myusername;
+    var Timer;
+    var publicNum;
+    var tcsflag;
+    var remark;
+    mui.init({
+        gestureConfig:{
+            longtap: true, //默认为false
+        }
+    });
+
+    $(function(){
+        android.windowReady();
+        $('#wrap-content').css('height',$(window).height()+'px');
+        $('#slide3_StoresType_input').css('width',$('#slide3_SuppName_input').width()+'px');
+        template1 = document.getElementById('template1').innerHTML;
+        template = document.getElementById('template_storage').innerHTML;
+        initSwiper();//初始化swiper
+        $('#query-tableDiv').css('padding-bottom',$('.queryDiv').eq(0).height()+15);
+        $('#query-tableDiv2').css('height',$(window).height()-$('.tabDiv').eq(0).height()-$('.queryDiv').eq(0).height());
+        $('#query-tableDiv2').css('padding-bottom',$('.queryDiv').eq(0).height()+15);
+    });
+
+    //设置用户名
+    function setusername(username,server_Domain) {
+        xgxx.server_Domain=server_Domain;
+        myusername=username;
+        getJiaoLiaoList();
+    }
+
+    //初始化swiper
+    function initSwiper() {
+        $('.swiper-container').height($(window).height());
+        var mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: false,
+            onSlideChangeEnd: function(swiper){
+                $('.tab-p').removeClass('active');
+                $('.tab-p').eq(swiper.activeIndex).addClass('active');
+            }
+        });
+        $('.tab-p').click(function () {
+            mySwiper.slideTo($('.tab-p').index(this), 500, false);
+            $('.tab-p').removeClass('active');
+            $('.tab-p').eq(mySwiper.activeIndex).addClass('active');
+        });
+    }
+
+    $('#slide3_StoresType_input').change(function(){
+        //库位类型为自动能输入也能选择，为手动没有库位的概念，不能输入也不能选择
+        if($(this).children('option:selected').val()=='1'){//手动
+            $('#ShelfNo_input').attr("disabled",true);
+            $('#ShelfNo_input').css("background","#e2e2e2");
+            $('#query-btn2').attr("disabled",true);
+        }else if($(this).children('option:selected').val()=='2'){//自动
+            $('#ShelfNo_input').removeAttr("disabled");
+            $('#ShelfNo_input').css("background","#ffffff");
+            $('#query-btn2').removeAttr("disabled");
+        }
+    })
+    
+    //获取叫料任务列表
+    function getJiaoLiaoList() {
+        xgxx.ajax('JqjWMS/GetTaskList?callback=callback',{
+            data:{
+            },
+            success: function (result, status) {
+                var jsonData = eval(result);
+                console.log(jsonData);
+                console.log(JSON.stringify(jsonData));
+                //去除日期数据里的“T”
+                for(var i=0; i<jsonData.length; i++){
+                    var tempStr=jsonData[i].ToFeed_date.replace('T', ' ');
+                    jsonData[i].ToFeed_date=tempStr.substring(0,16);
+                }
+                console.log(jsonData.length);
+                //如果取料方式是AGV且取料状态TackStatus=1，则该条数据变绿
+                //如果取料方式是人工且取料状态TackStatus=1，则该条数据不显示
+                var newData=[];
+                //把不显示的过滤掉
+                for(var j=0; j<jsonData.length; j++){
+                    if(jsonData[j].TackStatus =="1" && jsonData[j].DeliverType =="2"){
+                        continue;
+                    }else{
+                        newData.push(jsonData[j]);
+                    }
+                }
+                console.log(newData);
+                document.getElementById('form_jiaoliao').innerHTML = doT.template(template1)(newData);
+                $("#form_jiaoliao").find("tr").each(function(){
+                    if($(this).find('td').eq(7).html()=="AGV" && $(this).find('td').eq(8).html()==1){
+                        $(this).find('td').css('background','#4EEE94');
+                    }
+                });
+
+                $('#jiaoliao_table > tbody > tr').on('longtap',function(){
+                    var line_id = $(this).attr('id');
+                    var num = line_id.substring(line_id.length-1);
+                    publicNum = num;
+                    mui('#sheet1').popover('toggle');
+                });
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    //actionsheet点击取料完成时
+    function receiveFinish() {
+        var maccode=$('#jiaoliao_table > tbody > tr:eq('+(publicNum-1)+') td:eq(0)').html();
+        var jqjcode=$('#jiaoliao_table > tbody > tr:eq('+(publicNum-1)+') td:eq(1)').html();
+        showLoading();
+        android.startLoading();
+        xgxx.ajax('JqjWMS/GetUndoTaskList?callback=callback',{
+            data:{
+                maccode:maccode,
+                jqjcode:jqjcode
+            },
+            success: function (result, status) {
+                android.endLoading();
+                closeLoading();
+                console.log(result);
+                window.location.reload();//刷新当前页面
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+        mui('#sheet1').popover('toggle');
+    }
+
+    //slide2 查询库存
+    $('#query-btn').click(function () {
+        queryStorage();
+    });
+    //加强件编号回车事件
+    $('#slide2_jqcode').keyup(function(event){
+        if(event.keyCode ==13){
+            queryStorage();
+        }
+    });
+    //加强件规格回车事件
+    $('#slide2_jqgg').keyup(function(event){
+        if(event.keyCode ==13){
+            queryStorage();
+        }
+    });
+
+    //查询库存
+    function queryStorage() {
+        android.startLoading();
+        var jqjcode=$('#slide2_jqcode').val().toUpperCase();//加强件编号
+        $('#slide2_jqcode').val(jqjcode);
+        var xh=$('#slide2_jqgg').val();//加强件编号
+        android.print(xgxx.server_Domain);
+        android.print(jqjcode);
+        android.print(xh);
+        document.getElementById('formBody').innerHTML = doT.template(template)("");
+        xgxx.ajax('JqjWMS/GetJqjFromStore?callback=callback',{
+            data:{
+                jqjcode:jqjcode,
+                xh:xh
+            },
+            success: function (result, status) {
+                android.endLoading();
+                var jsonData = eval(result);
+                android.print(JSON.stringify(jsonData));
+                for(var j=0; j<jsonData.length; j++){
+                    var obj = jsonData[j];
+                    for(var i in obj) {
+                        if(Object.prototype.hasOwnProperty.call(obj,i)) { //过滤
+                            if(obj[i]==null){
+                                obj[i]="";
+                            }
+                        }
+                    }
+                }
+                for(var i=0; i<jsonData.length; i++){
+                    var tempStr=jsonData[i].StoreTime.replace('T', ' ');
+                    jsonData[i].StoreTime=tempStr.substring(0,16);
+                }
+                document.getElementById('formBody').innerHTML = doT.template(template)(jsonData);
+                $('#header_table2').show();
+                $('#query-tableDiv2').show();
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    //slide3 加强件编号失去光标事件
+    $("#slide3_JqjCode").keyup(function(){
+        if(event.keyCode == 13){
+            showLoading();
+            var jqjcode=$('#slide3_JqjCode').val().toUpperCase();
+            $('#slide3_JqjCode').val(jqjcode);
+            android.startLoading();
+            xgxx.ajax('JqjWMS/GetJqjBeforeStore?callback=callback',{
+                data:{
+                    jqjcode:jqjcode
+                },
+                success: function (result, status) {
+                    android.endLoading();
+                    closeLoading();
+                    var jsonData = eval(result);
+                    console.log(JSON.stringify(jsonData));
+                    android.print(JSON.stringify(jsonData));
+                    if(jsonData.length>0){
+                        $('#slide3_weight_input').val(jsonData[0].JqjWgt);//重量
+                        $('#slide3_ggxh_input').val(jsonData[0].JqjXh);//规格型号
+                        $('#slide3_SuppName_input').val(jsonData[0].SuppName);//供应商
+                        $('#slide3_Pc_input').val(jsonData[0].Pc);//批次
+                        if(jsonData[0].StoresType=='手动库位'){
+                            $("#slide3_StoresType_input")[0].selectedIndex = 1;
+                            $('#ShelfNo_input').css('background','#e2e2e2');
+                            $('#ShelfNo_input').attr('disabled',true);
+                        }else if(jsonData[0].StoresType=='自动库位'){
+                            $("#slide3_StoresType_input")[0].selectedIndex = 2;
+                        }else{
+                            $("#slide3_StoresType_input")[0].selectedIndex = 0;
+                        }
+                        remark=jsonData[0].remark;
+                        if($('#ShelfNo_input').val()==""){
+                            $('#ShelfNo_input').focus();
+                        }else{
+                            $('#ShelfNo_input').focus();
+                            $('#ShelfNo_input').select();
+                        }
+                    }else{
+                        android.showToast('数据获取失败');
+                    }
+                },
+                error: function (error) {
+                    android.endLoading();
+                    closeLoading();
+                    alert("错误"+JSON.stringify(error));
+                }
+            });
+        }
+    });
+
+    //slide3 选择库位
+    $('#query-btn2').click(function () {
+        var panCode=$('#slide3_JqjCode').val();
+        if(panCode==null || panCode=="" || panCode.length==0){
+            android.showToast('请先输入加强件编号');
+        }else{
+            android.chooseStorage();
+        }
+    });
+    function setShelfNo(ShelfNo) {
+        $('#ShelfNo_input').val(ShelfNo);
+    }
+    //slide3入库
+    $('#sure-btn2').click(function () {
+        var ShelfNo=$('#ShelfNo_input').val();//库位编号
+        var JqjCode=$('#slide3_JqjCode').val();//加强件编号
+        var Storestype=$('#slide3_StoresType_input').val();//库位类别
+        var JqjXh=$('#slide3_ggxh_input').val();//型号
+        var PC=$('#slide3_Pc_input').val();//批次
+        var JqjWgt=$('#slide3_weight_input').val();//加强件重量
+        var SuppName=$('#slide3_SuppName_input').val();//供应商
+        if(Storestype==1 || Storestype=="1"){
+            // 手动库位，可以为空
+        }else{
+            if(ShelfNo==null || ShelfNo=="" || ShelfNo.length==0){
+                android.showToast("库位编号不能为空");
+                return;
+            }
+        }
+        if(JqjCode==null || JqjCode=="" || JqjCode.length==0){
+            android.showToast("加强件编号不能为空");
+            return;
+        }
+        if(Storestype==null || Storestype=="" || Storestype.length==0){
+            android.showToast("请选择库位类别");
+            return;
+        }
+        if(JqjWgt==null || JqjWgt=="" || JqjWgt.length==0){
+            android.showToast("重量不能为空");
+            return;
+        }
+        var jsonObj={};
+        jsonObj['ShelfNo']=ShelfNo;
+        jsonObj['JqjCode']=JqjCode;
+        jsonObj['StoresType']=Storestype;
+//        jsonObj['Inputmark']=remark;
+        jsonObj['Usercode']="001";
+        jsonObj['Username']="eden";
+        jsonObj['JqjXh']=JqjXh;
+        jsonObj['PC']=PC;
+        jsonObj['JqjWgt']=JqjWgt;
+        jsonObj['SuppName']=SuppName;
+        android.startLoading();
+        android.print(JSON.stringify(jsonObj));
+        xgxx.ajax('JqjWMS/JqjStore?callback=callback',{
+            data:{
+                mainjson:JSON.stringify(jsonObj)
+            },
+            success: function (result, status) {
+                android.endLoading();
+                if(result=="入库成功" || result=="移库成功"){
+                    android.showToast(result);
+                    $('#slide3_JqjCode').val("");
+                    $('#slide3_weight_input').val("");
+                    $('#slide3_ggxh_input').val("");
+                    $('#ShelfNo_input').val("");
+                    $('#slide3_SuppName_input').val("");
+                    $('#slide3_StoresType_input').val("");
+                    $('#slide3_Pc_input').val("");
+                    $('#ShelfNo_input').css('background','#ffffff');
+                    $('#ShelfNo_input').attr('disabled',false);
+                    $('#slide3_JqjCode').focus();
+                }else{
+                    android.showToast(result);
+                    $('#slide3_JqjCode').focus();
+                    $('#slide3_JqjCode').select();
+                }
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    });
+
+    //slide4出库
+    $('#sure-btn3').click(function () {
+        outStorage();
+    });
+    //盘具编号输入框回车事件
+    $('#slide4_JqjCode_input').keyup(function(event){
+        if(event.keyCode ==13){
+            outStorage();
+        }
+    });
+
+    //出库
+    function outStorage() {
+        var slide4_JqjCode_input=$('#slide4_JqjCode_input').val().toUpperCase();//加强件编号
+        $('#slide4_JqjCode_input').val(slide4_JqjCode_input);
+        if(slide4_JqjCode_input==null || slide4_JqjCode_input=="" || slide4_JqjCode_input.length==0){
+            android.showToast("加强件编号不能为空");
+            return;
+        }
+        android.startLoading();
+        xgxx.ajax('JqjWMS/JqjOut?callback=callback',{
+            data:{
+                jqjcode:slide4_JqjCode_input
+            },
+            success: function (result, status) {
+                android.endLoading();
+                if(result=="已出库"){
+                    android.showToast("出库成功");
+                    $('#slide4_JqjCode_input').val("");
+                    $('#slide4_JqjCode_input').focus();
+                }else{
+                    var msg = result.substring(result.indexOf("(")+1,result.length-1);
+                    android.showToast(msg);
+                    android.showToast("出库失败，请重新出库");
+                    $('#slide4_JqjCode_input').focus();
+                    $('#slide4_JqjCode_input').select();
+                }
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    $('#cancel-btn2').click(function () {
+        $('#slide3 input').val("");
+        $("#slide3_StoresType_input")[0].selectedIndex = 0;
+    });
+    $('#cancel-btn3').click(function () {
+        $('#slide4_JqjCode_input').val("");
+    });
+
+
+    //slide5  填充绳编号失去光标事件
+    $("#slide2_input_code").keyup(function(){
+        if(event.keyCode == 13){
+            showLoading();
+            var strcode=$('#slide2_input_code').val().toUpperCase();
+            $('#slide2_input_code').val(strcode);
+            if(strcode==null || strcode=="" || strcode.length==0){
+                android.showToast("请输入编号");
+                return;
+            }
+            var str=strcode.substring(0,2);
+            var flag;
+            if(str=="PJ"){
+                flag=2;
+            }else{
+                flag=1
+            }
+            android.startLoading();
+            xgxx.ajax('Wmstcs/Gettcs?callback=callback',{
+                data:{
+                    strcode:strcode,
+                    flag:flag
+                },
+                success: function (result, status) {
+                    android.endLoading();
+                    closeLoading();
+                    var jsonData = eval(result);
+                    console.log(JSON.stringify(jsonData));
+                    $('#slide2_TCS_Code').val(jsonData[0].填充绳编号);
+                    $('#slide2_weight').val(jsonData[0].重量);
+                    $('#slide2_xh').val(jsonData[0].规格型号);
+                    $('#slide2_pan_code').val(jsonData[0].盘具编号);
+                    $('#slide2_supplyName').val(jsonData[0].供应商);
+                    tcsflag = jsonData[0].类别;
+                    if($('#ShelfNo_input5').val()==""){
+                        $('#ShelfNo_input5').focus();
+                    }else{
+                        $('#ShelfNo_input5').focus();
+                        $('#ShelfNo_input5').select();
+                    }
+                },
+                error: function (error) {
+                    android.endLoading();
+                    closeLoading();
+                    console.log("错误"+JSON.stringify(error));
+                }
+            });
+        }
+    });
+    //slide5  点击选择按钮进入库区选择页面
+    $('#query-btn5').click(function () {
+        var panCode=$('#slide2_input_code').val();
+        if(panCode==null || panCode=="" || panCode.length==0){
+            android.showToast('请先输入编号');
+        }else{
+            android.chooseTCSStorage();
+        }
+    });
+    function setTCSShelfNo(ShelfNo) {
+        $('#ShelfNo_input5').val(ShelfNo);
+    }
+
+    //slide5 确定按钮入库
+    $('#sure-btn5').click(function () {
+        inStorageTCS();
+    });
+    //盘具编号输入框回车事件
+    $('#ShelfNo_input5').keyup(function(event){
+        if(event.keyCode ==13){
+            inStorageTCS();
+        }
+    });
+
+    //填充绳入库
+    function inStorageTCS() {
+        var tcsCode=$('#slide2_TCS_Code').val();//填充绳编号
+        var panno=$('#slide2_pan_code').val();//盘具编号
+        var shelfno=$('#ShelfNo_input5').val();//库位编号
+        var weight=$('#slide2_weight').val();//重量
+        if(tcsCode==null || tcsCode=="" || tcsCode.length==0){
+            android.showToast("充绳编号不能为空");
+            return;
+        }
+        if(panno==null || panno=="" || panno.length==0){
+            android.showToast("盘具编号不能为空");
+            return;
+        }
+        if(ShelfNo_input==null || ShelfNo_input=="" || ShelfNo_input.length==0){
+            android.showToast("库位编号不能为空");
+            return;
+        }
+        if(weight==null || weight=="" || weight.length==0){
+            android.showToast("重量不能为空");
+            return;
+        }
+        var jsonObj={};
+        jsonObj['tcsCode']=tcsCode;
+        jsonObj['panno']=panno;
+        jsonObj['shelfno']=shelfno;
+        jsonObj['weight']=weight;
+        jsonObj['tcsflag']=tcsflag;
+        console.log(JSON.stringify(jsonObj));
+        android.startLoading();
+        xgxx.ajax('Wmstcs/StorageIn?callback=callback',{
+            data:{
+                mainJson:JSON.stringify(jsonObj),
+                usercode:myusername,
+                username:myusername,
+                flag:"Y"
+            },
+            success: function (result, status) {
+                android.endLoading();
+                if(result=="入库成功" || result=="更新库位成功"){
+                    android.showToast(result);
+                    $('#slide2_input_code').val("");
+                    $('#slide2_TCS_Code').val("");
+                    $('#slide2_weight').val("");
+                    $('#slide2_xh').val("");
+                    $('#slide2_pan_code').val("");
+                    $('#slide2_supplyName').val("");
+                    $('#ShelfNo_input5').val("");
+                    $('#slide2_input_code').focus();
+                }else{
+                    android.showToast(result);
+                    $('#slide2_input_code').focus();
+                    $('#slide2_input_code').select();
+                }
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+
+
+
+    $('#cancel-btn2').click(function () {
+        $('#slide3_JqjCode').val("");
+        $('#slide3_weight_input').val("");
+        $('#slide3_ggxh_input').val("");
+        $('#ShelfNo_input').val("");
+        $('#slide3_SuppName_input').val("");
+        $('#slide3_StoresType_input').val("");
+        $('#slide3_Pc_input').val("");
+        $('#ShelfNo_input').css('background','#ffffff');
+        $('#ShelfNo_input').attr('disabled',false);
+    });
+
+    $('#cancel-btn5').click(function () {
+        $('#slide2_input_code').val("");
+        $('#slide2_TCS_Code').val("");
+        $('#slide2_weight').val("");
+        $('#slide2_xh').val("");
+        $('#slide2_pan_code').val("");
+        $('#slide2_supplyName').val("");
+        $('#ShelfNo_input5').val("");
+    });
+
+    //长按事件监听
+//    $.fn.longPress = function(fn) {
+//        var timeout = undefined;
+//        var $this = this;
+//        for(var i = 0;i<$this.length;i++){
+//            $this[i].addEventListener('touchstart', function(event) {
+//                timeout = setTimeout(fn, 800);  //长按时间超过800ms，则执行传入的方法
+//            }, false);
+//            $this[i].addEventListener('touchend', function(event) {
+//                clearTimeout(timeout);  //长按时间少于800ms，不会执行传入的方法
+//            }, false);
+//        }
+//    }
+</script>
+</body>
+</html>

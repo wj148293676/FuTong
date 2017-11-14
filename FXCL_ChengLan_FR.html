@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>光缆返修处理-复绕</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/storage.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="stylesheet" href="css/mui.min.css">
+    <link rel="stylesheet" href="css/mui.picker.min.css">
+    <link rel="stylesheet" href="css/mui.poppicker.css">
+    <style type="text/css">
+        .btn,.title{
+            font-family: "微软雅黑";
+            font-size: 16px;
+        }
+        .title{
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 35px;
+        }
+        .devideLine{
+            width: 98%;
+            height: 2px;
+            background: #666666;
+            margin-top: 15px;
+        }
+        .textarea{
+            width: 100%;
+            min-height: 60px;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 15px;
+            outline: 0;
+            border: 1px solid #999999;
+            font-size: 16px;
+            line-height: 24px;
+            word-wrap: break-word;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .box-container{
+            margin-top: 30px;
+            padding-bottom: 30px;
+            border: 1px solid #999999;
+            position: relative;
+        }
+        .title-p{
+            position: absolute;
+            font-family: "微软雅黑";
+            font-size: 18px;
+            font-weight: bold;
+            top: -15px;
+            left: 30px;
+            z-index: 100;
+            padding-left: 10px;
+            padding-right: 10px;
+            background: #ffffff;
+        }
+        .input-xgit{
+            border: 1px solid #cccccc;
+            outline: none;
+            height: 35px;
+            line-height: 30px;
+            padding: 3px 5px;
+        }
+        .inner-title{
+            font-family: "微软雅黑";
+            font-size: 16px;
+            line-height: 35px;
+        }
+        .workBtnDiv button{
+            margin-top: 10px;
+        }
+        .remark_p{
+            font-family: "微软雅黑";
+            font-size: 16px;
+            margin-top: 40px;
+        }
+        .input-group span{
+            font-family: "微软雅黑";
+        }
+        .modal-header{
+            background: #3A89ED;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .modal-title{
+            font-family: 微软雅黑;color: white;
+        }
+        .textinfo{
+            font-size: 20px;font-family: 微软雅黑;line-height: 150px;
+        }
+        .selectDiv{
+            border: 1px solid #cccccc;height: 40px;border-radius: 5px;
+        }
+        .selectDiv p{
+            height:39px;line-height: 39px;background: #eeeeee;font-size: 16px;font-family: 微软雅黑;color: #666666;border-bottom: 1px solid #cccccc;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap-content" style="overflow:hidden;">
+    <div class="container" style="margin-top: 10px;padding: 0px;">
+        <div class="row tabDiv">
+            <div class="col-xs-2 tab-item">
+                <p class="tab-p text-center active">查看</p>
+            </div>
+            <div class="col-xs-2 tab-item">
+                <p class="tab-p text-center">参数录入</p>
+            </div>
+            <div class="col-xs-2 col-md-2"></div>
+            <div class="col-xs-2 col-md-2 workBtnDiv">
+                <button id="saveBtn" type="button" class="btn btn-primary center-block" style="width: 90%;">保存</button>
+            </div>
+            <div class="col-xs-2 col-md-2 workBtnDiv">
+                <button id="finishBtn" type="button"  class="btn btn-primary center-block" style="width: 90%;">复绕完成</button>
+            </div>
+            <div class="col-xs-2 col-md-2 workBtnDiv">
+                <button id="clearBtn" type="button" class="btn btn-primary center-block" style="width: 90%;">清除复绕信息</button>
+            </div>
+        </div>
+    </div>
+    <div class="swiper-container" style="margin-top: 10px;">
+        <div class="swiper-wrapper">
+            <!--slide1-->
+            <div class="swiper-slide" style="overflow-y: auto;">
+                <div class="container" style="padding: 0px;margin-bottom: 120px;">
+                    <div class="box-container">
+                        <p class="text-center title-p">基础信息</p>
+                        <div class="row" style="margin-top: 20px;padding: 15px;">
+                            <div class="col-xs-4 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">缆芯编号</span>
+                                    <input id="line_code" type="text" class="form-control" aria-describedby="jitai_code" readonly="readonly">
+                                    <p id="GUID" style="display: none;"></p>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">缆芯规格</span>
+                                    <input id="lineSpec" type="text" class="form-control" aria-describedby="fr_length" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">OTDR测试长(m)</span>
+                                    <input id="lineLen" type="text" class="form-control" aria-describedby="basic-addon1" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 15px;">
+                            <p class="col-xs-2 col-md-2 remark_p">BOM结构:</p>
+                            <div class="col-xs-10 col-md-10">
+                                <div id="BomStru" class="textarea" contenteditable="false" readonly="readonly"><br /></div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 15px;">
+                            <p class="col-xs-2 col-md-2 remark_p">原材料使用:</p>
+                            <div class="col-xs-10 col-md-10">
+                                <div id="MaterialsInfo1" class="textarea" contenteditable="false" readonly="readonly"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-container">
+                        <p class="text-center title-p">不合格信息</p>
+                        <div class="row" style="margin-top: 20px;padding: 15px;">
+                            <table id="header_table" class="table table-bordered" style="">
+                                <thead>
+                                <tr>
+                                    <th class="antoLine">光纤带印字</th>
+                                    <th class="antoLine">光纤规格</th>
+                                    <th class="antoLine">光纤色标</th>
+                                    <th class="antoLine">不合格长度</th>
+                                    <th class="antoLine">事件起点</th>
+                                    <th class="antoLine">事件参照点</th>
+                                    <th class="antoLine">废纤长度m</th>
+                                    <th class="antoLine">1310A端衰减</th>
+                                    <th class="antoLine">1310B端衰减</th>
+                                    <th class="antoLine">1550A端衰减</th>
+                                    <th class="antoLine">1550B端衰减</th>
+                                    <th class="antoLine">1310两端差</th>
+                                    <th class="antoLine">1550两端差</th>
+                                    <th class="antoLine">异常内容</th>
+                                    <th class="antoLine">光纤带编码</th>
+                                    <th class="antoLine">光纤带规格</th>
+                                    <th class="antoLine">光纤编码</th>
+                                    <th class="antoLine">备注</th>
+                                </tr>
+                                <tbody id="formBody">
+                                <script type="text/template" charset="UTF-8" id="template">
+                                    {{if(it && it.length>0){}}
+                                    {{for(var i=0; i < it.length; i++){}}
+                                    <tr class="task" id="task_daijian{{=(i+1)}}">
+                                        <td class="antoLine">{{=it[i].TubePlateCode}}</td>
+                                        <td class="antoLine">{{=it[i].Spec}}</td>
+                                        <td class="antoLine">{{=it[i].ShelfCode}}</td>
+                                        <td class="antoLine">{{=it[i].InTime}}</td>
+                                    </tr>
+                                    {{}}}
+                                    {{}}}
+                                </script>
+                                </tbody>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="row" style="padding: 15px;">
+                            <p class="col-xs-2 col-md-2 remark_p">缆芯不合格内容:</p>
+                            <div class="col-xs-10 col-md-10">
+                                <div id="Contents" class="textarea" contenteditable="false" readonly="readonly"><br /></div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 15px;">
+                            <p class="col-xs-2 col-md-2 remark_p">不合格内容备注:</p>
+                            <div class="col-xs-10 col-md-10">
+                                <div id="contentRemark" class="textarea" contenteditable="false" readonly="readonly"><br /></div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 15px;">
+                            <p class="col-xs-2 col-md-2 remark_p">工艺师处理意见备注:</p>
+                            <div class="col-xs-10 col-md-10">
+                                <div id="ProRemark" class="textarea" contenteditable="false" readonly="readonly"><br /></div>
+                            </div>
+                            <!--<div class="col-xs-10 col-md-10">-->
+                                <!--<textarea class="textarea" rows="6">-->
+                                    <!--在w3school，你可以找到你所需要的所有的网站建设教程。-->
+                                <!--</textarea>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--slide2-->
+            <div class="swiper-slide" style="overflow-y: auto;">
+                <div class="container" style="padding: 0px;margin-bottom: 120px;">
+                    <div class="row" style="margin-top: 50px;">
+                        <div class="col-xs-5 col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">复绕机台</span>
+                                <input id="jitai_code" type="text" class="form-control" aria-describedby="jitai_code" readonly="readonly" style="background: #ffffff;">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">复绕长度(m)</span>
+                                <input id="OrdrLen" type="text" class="form-control" aria-describedby="fr_length">
+                            </div>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">作业人员</span>
+                                <input id="operatorname" type="text" class="form-control" aria-describedby="basic-addon1" disabled="disabled">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 50px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">作业时间</span>
+                                <input id="operatortime" type="text" class="form-control" aria-describedby="jitai_code" disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">状态</span>
+                                <input id="StateView" type="text" class="form-control" aria-describedby="fr_length" disabled="disabled">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-container" style="margin-top: 60px;">
+                        <p class="text-center title-p">复绕参数录入</p>
+                        <div class="row" style="margin-top: 20px;padding: 15px;">
+                            <div class="col-xs-4 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">复绕线速(m/min)</span>
+                                    <input id="fr_speed" type="text" class="form-control" aria-describedby="jitai_code">
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">收线张力(bar)</span>
+                                    <input id="shou_zhangli" type="text" class="form-control" aria-describedby="fr_length">
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">放线张力(bar)</span>
+                                    <input id="fang_zhangli" type="text" class="form-control" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px;padding: 15px;">
+                            <div class="col-xs-3 col-md-3">
+                                <!--<div class="input-group">-->
+                                    <!--<span class="input-group-addon">收排线状况</span>-->
+                                    <!--<input id="sp_line_state" type="text" class="form-control" aria-describedby="fr_length" readonly="readonly">-->
+                                <!--</div>-->
+                                <div class="selectDiv">
+                                    <div class="row">
+                                        <div class="col-xs-6 col-md-6">
+                                            <p class="text-center">收排线状况</p>
+                                        </div>
+                                        <div class="col-xs-6 col-md-6">
+                                            <select id="sp_line_state" name="" style="height: 35px;">
+                                                <option value="1"></option>
+                                                <option value="2">良</option>
+                                                <option value="3">不良</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon">目标仓库</span>
+                                    <input id="storage" type="text" class="form-control" aria-describedby="jitai_code" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-xs-3 col-md-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon">盘号</span>
+                                    <input id="pan_code" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 15px;">
+                            <p class="col-xs-2 col-md-2 remark_p">备注:</p>
+                            <div class="col-xs-10 col-md-10">
+                                <div id="slide2_remark" class="textarea" contenteditable="true"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--loading-->
+<div id="loading" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+
+<!--bootstrap模态框-->
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title center-block text-center" id="gridSystemModalLabel">提示</h4>
+            </div>
+            <div class="modal-body"style="height: 150px">
+                <div class="row">
+                    <div class="col-md-2 col-xs-2"></div>
+                    <div class="col-md-8 col-xs-8 center-block text-center textinfo">确定复绕完成吗？</div>
+                    <div class="col-md-2 col-xs-2"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="sureFinishBtn" type="button" class="btn btn-primary">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<script type="text/javascript" src="js/doT.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript" src="js/mui.min.js"></script>
+<script type="text/javascript" src="js/mui.picker.min.js"></script>
+<script type="text/javascript" src="js/mui.poppicker.js"></script>
+<script type="text/javascript">
+
+    //收排线状况是下拉选择的，着色的良-1，不良-0；其他的都是良-0，不良-1
+    var template;
+    var my_macno;
+    var myusername;
+    var myusercode;
+    var Timer;
+    var publicNum;
+    var Quality;
+    var GUID;
+    $(function(){
+        android.windowReady();
+        $('#wrap-content').css('height',$(window).height()+'px');
+        initSwiper();//初始化swiper
+//        initPickerShouPaiXianZK();
+    });
+
+    //初始化swiper
+    function initSwiper() {
+        $('.workBtnDiv').css('display','none');
+        $('.swiper-container').height($(window).height());
+        var mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: false,
+            onSlideChangeEnd: function(swiper){
+                $('.tab-p').removeClass('active');
+                $('.tab-p').eq(swiper.activeIndex).addClass('active');
+                if(swiper.activeIndex==0){
+                    $('.workBtnDiv').css('display','none');
+                }else{
+                    $('.workBtnDiv').css('display','block');
+                }
+            }
+        });
+        $('.tab-p').click(function () {
+            if($('.tab-p').index(this)==0){
+                $('.workBtnDiv').css('display','none');
+            }else{
+                $('.workBtnDiv').css('display','block');
+            }
+            mySwiper.slideTo($('.tab-p').index(this), 500, false);
+            $('.tab-p').removeClass('active');
+            $('.tab-p').eq(mySwiper.activeIndex).addClass('active');
+
+        });
+    }
+
+    //设置用户名
+    function setusername(username,server_Domain,GUID) {
+        xgxx.server_Domain=server_Domain;
+        myusername=username;
+        myusercode="";
+        GUID=GUID;
+        getInfo(GUID);//获取基础信息
+        $('#GUID').html(GUID);
+        saveInfo();
+        finishFr();
+        clearInfo();
+        $('#sureFinishBtn').click(function () {
+            sureFinishBtn();
+        });
+    }
+
+    //复绕中  http://10.100.2.11:8095/Strandrepair/GetStrandRepairInput?callback=callback&guid=9ed35100-30e0-4ec8-91b7-8f95286136d2&promethod=1
+    //未开始  http://10.100.2.11:8095/Strandrepair/GetStrandRepairInput?callback=callback&guid=0ea60e5b-7f38-4943-b07e-7405b3193179&promethod=1
+    function getInfo(GUID) {
+        android.print(myusername);
+        android.print(GUID);
+        android.startLoading();
+        xgxx.ajax('Strandrepair/GetStrandRepairInput?callback=callback',{
+            data:{
+                guid:GUID,
+                promethod:"1"
+            },
+            success: function (result, status) {
+                android.print(JSON.stringify(result));
+                android.endLoading();
+                if(result.Code=="400"){
+                    android.showToast(result.Msg);
+                }
+                if(result.Msg=="ok"){
+                    $('#line_code').val(result.BasicInfo[0].StdCode);//缆芯编号
+                    $('#lineSpec').val(result.BasicInfo[0].StdSpec);//缆芯规格
+                    $('#lineLen').val(result.BasicInfo[0].OTDRlen);//OTDR测试长
+                    $('#BomStru').html(result.BasicInfo[0].BomStru);//BOM结构
+                    $('#MaterialsInfo1').html(result.BasicInfo[0].MaterialsInfo1);//原材料使用
+                    $('#Contents').html(result.BasicInfo[0].Contents);//缆芯不合格内容
+                    $('#contentRemark').html(result.BasicInfo[0].contentRemark);//不合格内容备注
+                    $('#ProRemark').html(result.BasicInfo[0].ProRemark);//工艺师意见
+
+                    if(result.InputInfo[0].ProState=='复绕中'){
+                        $('#jitai_code').val(result.InputInfo[0].MacCode);//复绕机台
+                        $('#OrdrLen').val(result.InputInfo[0].StdLen);//复绕长度
+                        $('#StateView').val(result.InputInfo[0].ProState);//状态
+                        if(result.InputInfo[0].OperatorName=="" || result.InputInfo[0].OperatorName==undefined){
+                            $('#operatorname').val(myusername);//作业人员
+                        }else{
+                            $('#operatorname').val(result.InputInfo[0].OperatorName);//作业人员
+                        }
+                        if(result.InputInfo[0].OperatorTime=="" || result.InputInfo[0].OperatorTime==undefined){
+                            $('#operatortime').val(Format(new Date(),"yyyy-MM-dd HH:mm"));//作业时间
+                        }else{
+                            $('#operatortime').val((result.InputInfo[0].OperatorTime.replace('T', ' ')).substring(0,16));//作业时间
+                        }
+                        $('#fr_speed').val(result.InputInfo[0].Speed);//线速
+                        $('#shou_zhangli').val(result.InputInfo[0].ShouZhangLi);//收线张力
+                        $('#fang_zhangli').val(result.InputInfo[0].FangZhangLi);//放线张力
+                        $('#sp_line_state').val(result.InputInfo[0].ShouPaiXianZK);//收排线状况
+                        $('#pan_code').val(result.InputInfo[0].StdPanNo);//盘号
+                        $('#storage').val(result.InputInfo[0].StorageName);//目标仓库
+                        $('#storage').data("TargetStorage",result.InputInfo[0].TargetStorage);//目标仓库
+                        $('#slide2_remark').val(result.InputInfo[0].Remark);//备注
+                    }else if(result.InputInfo[0].状态=='未开始'){
+                        $('#StateView').val(result.InputInfo[0].状态);//状态
+                        $('#storage').val(result.InputInfo[0].StorageName);//目标仓库
+                        $('#storage').data("TargetStorage",result.InputInfo[0].TargetStorage);//目标仓库
+                        $('#OrdrLen').val(result.InputInfo[0].ordlen);//复绕长度
+                        $('#pan_code').val(result.InputInfo[0].StdPanNo);//盘号
+                        $('#operatortime').val(Format(new Date(),"yyyy-MM-dd HH:mm"));//作业时间
+                        $('#operatorname').val(myusername);//作业人员
+                    }
+
+                    var tablejsonData=NullToBlank(result.UqInfo);
+                    template = document.getElementById('template').innerHTML;
+                    document.getElementById('formBody').innerHTML = doT.template(template)(tablejsonData);
+
+                    var jsonData=[];
+                    var datas = {};
+                    datas['value'] = result.ProList[2].Code;
+                    datas['text'] = result.ProList[2].ProcessName;
+                    var objarray=[];
+                    for(var j=0;j<result.EquList.length;j++){
+                        if(result.EquList[j].ProcessName==result.ProList[2].ProcessName){
+                            var item = {};
+                            item['value'] = result.EquList[j].Code;
+                            item['text'] = result.EquList[j].MacName+"(位置："+result.EquList[j].Position+")";
+                            objarray.push(item);
+                        }
+                    }
+                    datas['children'] = objarray;
+                    jsonData.push(datas);
+                    initPicker(jsonData);
+                }
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    function saveInfo() {
+        $('#saveBtn').click(function () {
+            var savejson=[];
+            var obj={};
+            var guid=$('#GUID').html();
+            obj['GUID']=$('#GUID').html();
+            obj['StdCode']=$('#line_code').val();//成缆编号
+            obj['AdirectB']=-1;
+            obj['TargetStorage']=$('#storage').data("TargetStorage");//目标仓库;
+            obj['StdLen']=$('#OrdrLen').val();//复绕长度
+            obj['Speed']=$('#fr_speed').val();//复绕线速
+            obj['ShouZhangLi']=$('#shou_zhangli').val();//收线张力
+            obj['FangZhangLi']=$('#fang_zhangli').val();//放线张力
+            obj['ShouPaiXianZK']=$('#sp_line_state').val();//收排线状况
+            obj['MacCode']=$('#jitai_code').data("Code");//机台代码
+            obj['PrintCount']="";//打印次数 默认为””
+            obj['Operator']="";//操作者编码
+            obj['OperatorName']=myusername;//操作者姓名
+            obj['OperatorTime']=$('#operatortime').val();//操作时间
+            obj['Remark']=$('#slide2_remark').html();//备注
+            obj['StdPanNo']=$('#pan_code').val();//盘号
+            savejson.push(obj);
+            savejson = JSON.stringify(savejson);
+            android.print(typeof(savejson));
+            android.print(guid);
+            android.print(savejson);
+            android.startLoading();
+
+            var  datas=new Object();
+            datas.callback='callback';
+            datas.flag='1';
+            datas.guid=$('#GUID').html();
+            datas.savejson=savejson;
+            android.print(JSON.stringify(datas));
+            $.ajax({
+                url: xgxx.server_Domain+"Strandrepair/SaveStrandRepair",
+                type: 'post',
+                data: datas,
+                crossDomain: true,
+                timeout: 50000,
+                success:function(data){
+                    android.endLoading();
+                    android.showToast("保存成功");
+                    android.print("保存成功啦："+JSON.stringify(data));
+                },
+                error:function(error){
+                    android.endLoading();
+                    var result = error.responseText;
+                    result = result.substring(9,result.length-1);
+                    android.print(result);
+                    result = eval("["+result+"]");
+                    if(result[0].Code=="400"){
+                        android.showToast(result[0].Msg);
+                    }else if(result[0].Code=="200"){
+                        android.showToast(result[0].Msg);
+                        $('#StateView').val("复绕中");
+                    }
+                }
+            });
+
+//            xgxx.ajax('Strandrepair/SaveStrandRepair?callback=callback',{
+//                data:{
+//                    flag:1,
+//                    guid:guid,
+//                    savejson:savejson
+//                },
+//                success: function (result, status) {
+//                    android.endLoading();
+//                    android.print(JSON.stringify("success"));
+//                    if(result.Msg=="保存成功"){
+//                        android.showToast("保存成功");
+//                        $('#StateView').val("复绕中");
+//                    }
+//                },
+//                error: function (error) {
+//                    android.endLoading();
+//                    android.print(JSON.stringify(error));
+//                }
+//            });
+        });
+    }
+
+    //复绕完成
+    function finishFr() {
+        $('#finishBtn').click(function () {
+            var jitai_code=$('#jitai_code').val();//复绕机台
+            var OrdrLen=$('#OrdrLen').val();//复绕长度
+            var operatorname=$('#operatorname').val();//作业人员
+            var operatortime=$('#operatortime').val();//作业时间
+            var StateView=$('#StateView').val();//状态
+            var fr_speed=$('#fr_speed').val();//复绕线速
+            var shou_zhangli=$('#shou_zhangli').val();//收线张力
+            var fang_zhangli=$('#fang_zhangli').val();//放线张力
+            var sp_line_state=$('#sp_line_state').val();//收排线状况
+            var pan_code=$('#pan_code').val();//盘号
+            var storage=$('#storage').val();//目标仓库
+
+            if(jitai_code=="" || jitai_code==null){
+                android.showToast("复绕机台不能为空");
+                return;
+            }
+            if(OrdrLen=="" || OrdrLen==null){
+                android.showToast("复绕长度不能为空");
+                return;
+            }
+            if(operatorname=="" || operatorname==null){
+                android.showToast("作业人员不能为空");
+                return;
+            }
+            if(operatortime=="" || operatortime==null){
+                android.showToast("作业时间不能为空");
+                return;
+            }
+            if(StateView=="" || StateView==null){
+                android.showToast("状态不能为空");
+                return;
+            }
+            if(fr_speed=="" || fr_speed==null){
+                android.showToast("复绕线速不能为空");
+                return;
+            }
+            if(shou_zhangli=="" || shou_zhangli==null){
+                android.showToast("收线张力不能为空");
+                return;
+            }
+            if(fang_zhangli=="" || fang_zhangli==null){
+                android.showToast("放线张力不能为空");
+                return;
+            }
+            if(sp_line_state=="" || sp_line_state==null){
+                android.showToast("收排线状况不能为空");
+                return;
+            }
+            if(pan_code=="" || pan_code==null){
+                android.showToast("盘号不能为空");
+                return;
+            }
+            if(storage=="" || storage==null){
+                android.showToast("目标仓库不能为空");
+                return;
+            }
+
+            $('#myModal').on('shown.bs.modal', function (e) {
+                // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
+                $(this).css('display', 'block');
+                var modalHeight=$(window).height() / 2 - $('#myModal .modal-dialog').height() / 2;
+                $(this).find('.modal-dialog').css({
+                    'margin-top': modalHeight
+                });
+            }).modal({
+                keyboard:true//当按下esc键时，modal框消失
+            });
+        });
+    }
+
+    //确定复绕完成
+    function sureFinishBtn() {
+        var guid=$('#GUID').html();
+        var ocode="";//操作者编码
+        var dt=$('#operatortime').val();
+        android.print(guid);
+        android.startLoading();
+        xgxx.ajax('Strandrepair/EndStrandRepair?callback=callback',{
+            data:{
+                flag:1,
+                guid:guid,
+                dt:dt,
+                ocode:ocode,
+                oname:myusername
+            },
+            success: function (result, status) {
+                android.endLoading();
+                if(result.Code=="200"){
+                    android.showToast("复绕完成");
+                    android.closeActivity();
+                }else{
+                    android.showToast(result.Msg);
+                }
+                $('#myModal').modal('hide');
+            },
+            error: function (error) {
+                android.endLoading();
+                android.print(JSON.stringify(error));
+            }
+        });
+    }
+    
+    //清除复绕信息
+    function clearInfo() {
+        $('#clearBtn').click(function () {
+            var guid=$('#GUID').html();
+            xgxx.ajax('Strandrepair/ClearStrandRepair?callback=callback',{
+                data:{
+                    flag:1,
+                    guid:guid
+                },
+                success: function (result, status) {
+                    android.endLoading();
+                    if(result.Code=="200"){
+                        android.showToast("数据清除完成");
+                        $('#jitai_code').val("");//复绕机台
+                        $('#OrdrLen').val("");//复绕长度
+                        $('#StateView').val("未开始");//状态
+                        $('#fr_speed').val("");//复绕线速
+                        $('#shou_zhangli').val("");//收线张力
+                        $('#fang_zhangli').val("");//放线张力
+                        $('#sp_line_state').val("");//收排线状况
+                        $('#slide2_remark').val("");//备注
+                        window.location.reload();//刷新当前页面.
+                    }else{
+                        android.showToast(result.Msg);
+                    }
+                },
+                error: function (error) {
+                    android.endLoading();
+                    android.print(JSON.stringify(error));
+                }
+            });
+        });
+    }
+    
+    
+    function initPicker(jsonData) {
+        //级联示例
+        var cityPicker = new mui.PopPicker({
+            layer: 2
+        });
+        cityPicker.setData(jsonData);
+        document.getElementById('jitai_code').addEventListener('tap', function(event) {
+            cityPicker.show(function(items) {
+                document.getElementById('jitai_code').value = items[0].text + " " + items[1].text;
+                $('#jitai_code').data("Code",items[1].value);
+                //返回 false 可以阻止选择框的关闭
+                //return false;
+            });
+        }, false);
+    }
+
+    function initPickerShouPaiXianZK(){
+        document.getElementById('sp_line_state').addEventListener('tap', function(event){
+            document.getElementById('sp_line_state').value="";
+            var picker = new mui.PopPicker();
+            picker.setData([
+                {
+                    value:'1',
+                    text:' '
+                },
+                {
+                    value:'2',
+                    text:'良'
+                },
+                {
+                    value:'3',
+                    text:'不良'
+                }
+            ]);
+            picker.show(function (selectItems) {
+                document.getElementById('sp_line_state').value=selectItems[0].text;
+                document.getElementById('sp_line_state').setAttribute("data-loginType",selectItems[0]['value']);
+            });
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>束管半成品仓储管理</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/suguan_bck.css">
+    <link rel="stylesheet" href="css/loading.css">
+</head>
+<body style="overflow: hidden">
+<div class="container tabDiv">
+    <div class="row">
+        <div class="col-xs-2 tab-item" style="margin-left: 10px;">
+            <p class="tab-p text-center active">库存</p>
+        </div>
+        <div class="col-xs-2 tab-item">
+            <p class="tab-p text-center">入库管理</p>
+        </div>
+        <div class="col-xs-2 tab-item">
+            <p class="tab-p text-center">出库管理</p>
+        </div>
+    </div>
+</div>
+<div class="swiper-container" style="margin-top: 10px;">
+    <div class="swiper-wrapper">
+        <!--slide1-->
+        <div class="swiper-slide">
+            <div class="container queryDiv" style="padding: 0px;">
+                <div class="row" style="margin: 0px;">
+                    <div class="col-xs-1 col-md-1 text-center" style="padding: 0px;">
+                        <p class="input-title">束管编号</p>
+                    </div>
+                    <div class="col-xs-2 col-md-2" style="padding: 0px;">
+                        <input id="slide1_tubecode" class="query-input" type="text" style="width:100%;margin-left: 0;">
+                    </div>
+                    <div class="col-xs-1 col-md-1 text-center" style="padding: 0px;">
+                        <p class="input-title">束管规格</p>
+                    </div>
+                    <div class="col-xs-2 col-md-2" style="padding: 0px;">
+                        <input id="slide1_spec" class="query-input" type="text" style="width:100%;margin-left: 0;">
+                    </div>
+                    <div class="col-xs-1 col-md-1 text-center" style="padding: 0px;">
+                        <p class="input-title">缆芯编号</p>
+                    </div>
+                    <div class="col-xs-2 col-md-2" style="padding: 0px;">
+                        <input id="slide1_StdCode" class="query-input" type="text" style="width:100%;margin-left: 0;">
+                    </div>
+                    <div class="col-xs-3 col-md-3 text-center">
+                        <button id="query-btn" class="center-block" style="width: 50%;">查询</button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body" style="padding: 10px;">
+                <table class="table table-bordered" style="table-layout:fixed;">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th>束管编号</th>
+                            <th>束管规格</th>
+                            <th>色标</th>
+                            <th>长度(m)</th>
+                            <th>品质</th>
+                            <th>盘具编号</th>
+                            <th>库位编号</th>
+                            <th>入库时间</th>
+                            <th>来源</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div id="query-tableDiv" style="overflow-y: auto;margin-top: -20px">
+                    <table id="bcp-table" class="table table-bordered">
+                        <tbody id="formBody">
+                            <script type="text/template" charset="UTF-8" id="template">
+                                {{if(it && it.length>0){}}
+                                    {{for(var i=0; i < it.length; i++){}}
+                                        <tr class="task" id="task_daijian{{=(i+1)}}">
+                                            <th class="index-th text-center" scope="row" style="width: 50px;">{{=(i+1)}}</th>
+                                            <td>{{=it[i].束管编号}}</td>
+                                            <td>{{=it[i].束管规格}}</td>
+                                            <td>{{=it[i].颜色}}</td>
+                                            <td>{{=it[i].长度}}</td>
+                                            <td>{{=it[i].品质}}</td>
+                                            <td>{{=it[i].盘号}}</td>
+                                            <td>{{=it[i].库位}}</td>
+                                            <td>{{=it[i].入库时间}}</td>
+                                            <td>{{=it[i].来源}}</td>
+                                            <td>{{=it[i].备注}}</td>
+                                        </tr>
+                                    {{}}}
+                                {{}}}
+                            </script>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--slide2-->
+        <div class="swiper-slide">
+            <div class="container">
+                <div class="row itemDiv2">
+                    <div class="col-xs-2">
+                        <p class="input-title2 text-left">束管编号：</p>
+                    </div>
+                    <div class="col-xs-4" style="padding: 0;">
+                        <input id="slide2_TubePlateCode" class="query-input2" type="text" disabled="disabled">
+                    </div>
+                    <div class="col-xs-2">
+                        <p class="input-title2 text-left">长度(m)：</p>
+                    </div>
+                    <div class="col-xs-4" style="padding: 0;">
+                        <input id="slide2_TubeLength" class="query-input2" type="text" disabled="disabled">
+                    </div>
+                </div>
+                <div class="row itemDiv2">
+                    <div class="col-xs-2">
+                        <p class="input-title2 text-left">规格型号：</p>
+                    </div>
+                    <div class="col-xs-4" style="padding: 0;">
+                        <input id="slide2_Tube2" class="query-input2" type="text" disabled="disabled">
+                    </div>
+                    <div class="col-xs-2">
+                        <p class="input-title2 text-left">盘具编号：</p>
+                    </div>
+                    <div class="col-xs-4" style="padding: 0;">
+                        <input id="slide2_Tube3" class="query-input2" type="text">
+                    </div>
+                </div>
+                <div class="row itemDiv2">
+                    <div class="col-xs-2">
+                        <p class="input-title2 text-left">色标：</p>
+                    </div>
+                    <div class="col-xs-4" style="padding: 0;">
+                        <input id="slide2_Tube4" class="query-input2" type="text" disabled="disabled">
+                    </div>
+                    <div class="col-xs-2">
+                        <p class="input-title2 text-left">库位编号：</p>
+                    </div>
+                    <div class="col-xs-2" style="padding: 0;">
+                        <input id="ShelfNo_input" class="query-input2" type="text">
+                    </div>
+                    <div class="col-xs-2">
+                        <button id="query-btn2">选择</button>
+                    </div>
+                </div>
+                <div class="row itemDiv2" style="margin-top: 60px;">
+                    <div class="col-xs-4 col-md-4 text-right">
+                        <button id="sure-btn2">确定</button>
+                    </div>
+                    <div class="col-xs-4 col-md-4"></div>
+                    <div class="col-xs-4 col-md-4 text-left">
+                        <button id="cancel-btn2">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--slide3-->
+        <div class="swiper-slide">
+            <div class="container">
+                <div class="row itemDiv2" style="margin-top: 100px;">
+                    <div class="col-xs-3">
+                        <p class="input-title2 text-right">盘具编号：</p>
+                    </div>
+                    <div class="col-xs-6">
+                        <input id="slide3_TubePlateCode_input" class="query-input2" type="text" style="margin-left: 0px;">
+                    </div>
+                </div>
+                <div class="row itemDiv2" style="margin-top: 60px;">
+                    <div class="col-xs-4 col-md-4 text-right">
+                        <button id="sure-btn3">确定</button>
+                    </div>
+                    <div class="col-xs-4 col-md-4"></div>
+                    <div class="col-xs-4 col-md-4 text-left">
+                        <button id="cancel-btn3">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--loading-->
+<div id="loading" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+<script type="text/javascript" src="js/doT.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript">
+    var template;
+    var my_macno;
+    var Timer;
+    var publicNum;
+    var Quality;
+    $(function(){
+        template = document.getElementById('template').innerHTML;
+        initSwiper();//初始化swiper
+        $('#query-tableDiv').css('height',$(window).height()-$('.tabDiv').eq(0).height()-$('.queryDiv').eq(0).height());
+        $('#query-tableDiv').css('padding-bottom',$('.queryDiv').eq(0).height()+15);
+    });
+    //初始化swiper
+    function initSwiper() {
+        $('.swiper-container').height($(window).height());
+        var mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: false,
+            onSlideChangeEnd: function(swiper){
+                $('.tab-p').removeClass('active');
+                $('.tab-p').eq(swiper.activeIndex).addClass('active');
+            }
+        });
+        $('.tab-p').click(function () {
+            mySwiper.slideTo($('.tab-p').index(this), 500, false);
+            $('.tab-p').removeClass('active');
+            $('.tab-p').eq(mySwiper.activeIndex).addClass('active');
+        });
+    }
+    //slide1  查询点击事件
+    $('#query-btn').click(function () {
+        showLoading();
+        var tubecode=$('#slide1_tubecode').val();
+        var spec=$('#slide1_spec').val();
+        var stdcode=$('#slide1_StdCode').val();
+        xgxx.ajax('WmsTube/GetTubePlate?callback=callback',{
+            data:{
+                tubecode:tubecode,
+                spec:spec,
+                StdCode:stdcode
+            },
+            success: function (result, status) {
+                jsonData="";
+                document.getElementById('formBody').innerHTML = doT.template(template)(jsonData);
+                closeLoading();
+                var jsonData = eval(result);
+                for(var i=0; i<jsonData.length; i++){
+                    console.log(jsonData[i].入库时间);
+                    var tempStr=jsonData[i].入库时间.replace('T', ' ');
+                    jsonData[i].入库时间=tempStr.substring(0,16);
+                }
+                for(var j=0; j<jsonData.length; j++){
+                    var obj = jsonData[j];
+                    for(var i in obj) {
+                        if(Object.prototype.hasOwnProperty.call(obj,i)) { //过滤
+                            if(obj[i]==null){
+                                obj[i]="";
+                            }
+                        }
+                    }
+                }
+                console.log(JSON.stringify(jsonData));
+                document.getElementById('formBody').innerHTML = doT.template(template)(jsonData);
+                $('#tableDiv').show();
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    });
+
+    //slide2  盘具编号失去光标事件
+    $("#slide2_Tube3").keyup(function(){
+        if(event.keyCode == 13){
+            showLoading();
+            var tubecode=$('#slide2_Tube3').val();
+            xgxx.ajax('WmsTube/GetTube?callback=callback',{
+                data:{
+                    tubeplatecode:tubecode
+                },
+                success: function (result, status) {
+                    closeLoading();
+                    var jsonData = eval(result);
+                    console.log(JSON.stringify(jsonData));
+                    if(jsonData.length>0){
+                        $('#slide2_TubePlateCode').val(jsonData[0].TubeCode);//束管编号
+                        $('#slide2_TubeLength').val(jsonData[0].长度m);//长度
+                        $('#slide2_Tube2').val(jsonData[0].规格);//规格型号
+                        $('#slide2_Tube4').val(jsonData[0].颜色);//色标
+                        Quality=jsonData[0].Quality;
+                    }else{
+//                        android.showToast('数据获取失败');
+                    }
+                },
+                error: function (error) {
+                    closeLoading();
+                    alert("错误"+JSON.stringify(error));
+                }
+            });
+        }
+    });
+    //slide2  点击选择按钮进入库区选择页面
+    $('#query-btn2').click(function () {
+        var panCode=$('#slide2_Tube3').val();
+        if(panCode==null || panCode=="" || panCode.length==0){
+            android.showToast('请先填写盘具编号');
+        }else{
+            if(Quality==null || Quality==""){
+                android.showToast('数据获取失败');
+            }else{
+                android.chooseStorage(Quality);
+            }
+        }
+    });
+    function setShelfNo(ShelfNo) {
+        $('#ShelfNo_input').val(ShelfNo);
+    }
+    //slide2 确定按钮入库
+    $('#sure-btn2').click(function () {
+        var slide2_TubePlateCode=$('#slide2_TubePlateCode').val();//束管编号
+        var panCode=$('#slide2_Tube3').val();//盘具编号
+        var ShelfNo_input=$('#ShelfNo_input').val();//库位编号
+        if(slide2_TubePlateCode==null || slide2_TubePlateCode=="" || slide2_TubePlateCode.length==0){
+            android.showToast("束管编号不能为空");
+            return;
+        }
+        if(panCode==null || panCode=="" || panCode.length==0){
+            android.showToast("盘具编号不能为空");
+            return;
+        }
+        if(ShelfNo_input==null || ShelfNo_input=="" || ShelfNo_input.length==0){
+            android.showToast("库位编号不能为空");
+            return;
+        }
+        console.log(ShelfNo_input);
+        console.log(slide2_TubePlateCode);
+        console.log(panCode);
+        console.log(Quality);
+        var jsonObj={};
+        jsonObj['ShelfNo']=ShelfNo_input;
+        jsonObj['SFGCode']=slide2_TubePlateCode;
+        jsonObj['Quality']=Quality;
+        jsonObj['SFGPan']=panCode;
+        jsonObj['ShelfGUID']='';
+        con
+        xgxx.ajax('WmsTube/StorageIn?callback=callback',{
+            data:{
+                mainJson:JSON.stringify(jsonObj),
+                usercode:'001',
+                username:'eden'
+            },
+            success: function (result, status) {
+                closeLoading();
+                alert(JSON.stringify(result));
+                console.log(result);
+                android.showToast(result);
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    });
+
+    //slide3 确定出库按钮
+    $('#sure-btn3').click(function () {
+        var slide3_TubePlateCode=$('#slide3_TubePlateCode_input').val();//盘具编号
+        if(slide3_TubePlateCode==null || slide3_TubePlateCode=="" || slide3_TubePlateCode.length==0){
+            android.showToast("盘具编号不能为空");
+            return;
+        }
+        xgxx.ajax('WmsTube/StorageOut?callback=callback',{
+            data:{
+                tubeplatecode:slide3_TubePlateCode
+            },
+            success: function (result, status) {
+                closeLoading();
+                console.log(result);
+                android.showToast(result);
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    });
+    $('#cancel-btn2').click(function () {
+        $('#slide2_TubePlateCode').val("");
+        $('#slide2_TubeLength').val("");
+        $('#slide2_Tube2').val("");
+        $('#slide2_Tube3').val("");
+        $('#slide2_Tube4').val("");
+        $('#ShelfNo_input').val("");
+
+    });
+    $('#cancel-btn3').click(function () {
+        $('#slide3_TubePlateCode_input').val("");
+    });
+</script>
+</body>
+</html>

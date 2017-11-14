@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>光缆返修处理</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/storage.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="stylesheet" href="css/datepicker.min.css">
+</head>
+<body style="overflow: hidden">
+<div id="wrap-content" style="overflow: hidden;">
+    <div class="swiper-container" style="margin-top: 10px;">
+        <div class="swiper-wrapper">
+            <!--slide1-->
+            <div class="swiper-slide">
+                <div class="container queryDiv" style="padding: 0px;">
+                    <div class="row" style="margin: 0px;">
+                        <div class="col-xs-1 col-md-1 text-center" style="padding: 0px;">
+                            <p class="input-title">光缆编号</p>
+                        </div>
+                        <div class="col-xs-2 col-md-2" style="padding: 0px;">
+                            <input id="slide1_tubecode" class="query-input" type="text" style="width:100%;margin-left: 0;">
+                        </div>
+                        <div class="col-xs-1 col-md-1 text-center" style="padding: 0px;">
+                            <p class="input-title">处理方式</p>
+                        </div>
+                        <div class="col-xs-1 col-md-1" style="padding: 0px;">
+                            <select id="xgit-select" class="xgit-select" style="height: 40px;background: #ffffff">
+                                <option value="所有">所有</option>
+                                <option value="复绕">复绕</option>
+                                <option value="分切">分切</option>
+                            </select>
+                        </div>
+                        <div class="col-xs-1 col-md-1 text-center" style="padding: 0px;">
+                            <p class="input-title">创建时间</p>
+                        </div>
+                        <div class="col-xs-2 col-md-2" style="padding: 0px;">
+                            <input id="start_date" class="query-input date" type="text" style="width:100%;margin-left: 0;">
+                        </div>
+                        <div class="col-xs-1 col-md-1" style="padding: 0px;">
+                            <p class="text-center center-block">至</p>
+                        </div>
+                        <div class="col-xs-2 col-md-2" style="padding: 0px;">
+                            <input id="end_date" class="query-input date" type="text" style="width:100%;margin-left: 0;">
+                        </div>
+                        <div class="col-xs-1 col-md-1 text-center" style="padding: 0px 5px;">
+                            <button id="query-btn" class="center-block" style="width: 100%;">查询</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 10px;">
+                    <table id="header_table" class="table table-bordered" style="table-layout:fixed;">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th>光缆编号</th>
+                            <th>光缆规格</th>
+                            <th>返修处理方式</th>
+                            <th>处理方式填写时间</th>
+                            <th>处理方式备注</th>
+                            <th>返修状态</th>
+                            <th style="display: none">GUID</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div id="query-tableDiv" style="overflow-y: auto;margin-top: -20px">
+                        <table id="bcp-table" class="table table-bordered">
+                            <tbody id="formBody">
+                            <script type="text/template" charset="UTF-8" id="template">
+                                {{if(it && it.length>0){}}
+                                {{for(var i=0; i < it.length; i++){}}
+                                <tr class="task" id="task_daijian{{=(i+1)}}">
+                                    <th class="index-th text-center" scope="row" style="width: 50px;">{{=(i+1)}}</th>
+                                    <td>{{=it[i].FGCode}}</td>
+                                    <td>{{=it[i].FGSpec}}</td>
+                                    <td>{{=it[i].ProMethodView}}</td>
+                                    <td>{{=it[i].ProMEditTime}}</td>
+                                    <td>{{=it[i].ProRemark}}</td>
+                                    <td>{{=it[i].ProStateView}}</td>
+                                    <td style="display: none;">{{=it[i].GUID}}</td>
+                                </tr>
+                                {{}}}
+                                {{}}}
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--loading-->
+<div id="loading" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+
+<script type="text/javascript" src="js/doT.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript" src="js/datepicker.min.js"></script>
+<script type="text/javascript">
+    var template;
+    var my_macno;
+    var myusername;
+    var Timer;
+    var publicNum;
+    var Quality;
+    $(function(){
+        initDataPicker();//初始化日期选择器
+        android.windowReady();
+        $('#wrap-content').css('height',$(window).height()+'px');
+        template = document.getElementById('template').innerHTML;
+        $('#query-tableDiv').css('height',$(window).height()-$('.tabDiv').eq(0).height()-$('.queryDiv').eq(0).height());
+        $('#query-tableDiv').css('padding-bottom',$('.queryDiv').eq(0).height()+15);
+        var date = new Date();
+        var formatDate=Format(date,"yyyy-MM-dd");
+        $("#start_date").val(formatDate);
+        $("#end_date").val(formatDate);
+    });
+    //设置用户名
+    function setusername(username,server_Domain) {
+        xgxx.server_Domain=server_Domain;
+        myusername=username;
+    }
+    //初始化日历控件
+    function initDataPicker() {
+        var startDate = document.getElementById('start_date');
+        var startDatePicker = new window.DatePicker({
+            target:startDate,
+            confirmCbk:function(data) {
+                startDate.value=Format(new Date(data.year + '-' + data.month + '-' + data.day),"yyyy-MM-dd");
+            }
+        });
+        startDate.onfocus = function(e) {
+            startDate.blur();
+            startDatePicker.open();
+        };
+        var endDate = document.getElementById('end_date');
+        var endDatePicker = new window.DatePicker({
+            target:endDate,
+            confirmCbk : function(data) {
+                endDate.value = Format(new Date(data.year + '-' + data.month + '-' + data.day),"yyyy-MM-dd");
+            }
+        });
+        endDate.onfocus = function(e) {
+            endDate.blur();
+            endDatePicker.open();
+        };
+    }
+
+    //slide1  查询点击事件
+    $('#query-btn').click(function () {
+        queryData();
+    });
+    //刷新表格数据
+    function refreshData() {
+        queryData();
+    }
+
+    function queryData() {
+        var tubecode=$('#slide1_tubecode').val();//光缆编号
+        var startTime=$('#start_date').val();//创建时间起始
+        var endTime=$('#end_date').val();//创建时间截止
+        var deal=$('#xgit-select').val();//处理方式
+        if(deal=="所有"){
+            deal=0;
+        }else if(deal=="复绕"){
+            deal=1;
+        }else if(deal=="分切"){
+            deal=2;
+        }
+        if(startTime=="" || startTime==null){
+            android.showToast("请填写创建时间");
+            return;
+        }
+        if(endTime=="" || endTime==null){
+            android.showToast("请填写创建时间");
+            return;
+        }
+        android.print("tubecode:"+tubecode);
+        android.print("deal:"+deal);
+        android.print("startTime:"+startTime);
+        android.print("endTime:"+endTime);
+
+        document.getElementById('formBody').innerHTML = doT.template(template)("");
+        android.startLoading();
+        xgxx.ajax('OSheathRepair/GetGLRepairList?callback=callback',{
+            data:{
+                FGCode:tubecode,
+                ProMethod:deal,
+                StartTime:startTime,
+                EndTime:endTime
+            },
+            success: function (result, status) {
+                android.print("result:"+JSON.stringify(result));
+                android.endLoading();
+                if(result.Msg=="1"){
+                    var jsonData = eval(result.Data);
+                    for(var i=0; i<jsonData.length; i++){
+                        console.log(jsonData[i].ProMEditTime);
+                        var tempStr=jsonData[i].ProMEditTime.replace('T', ' ');
+                        jsonData[i].ProMEditTime=tempStr.substring(0,16);
+                    }
+                    for(var j=0; j<jsonData.length; j++){
+                        var obj = jsonData[j];
+                        for(var i in obj) {
+                            if(Object.prototype.hasOwnProperty.call(obj,i)) { //过滤
+                                if(obj[i]==null){
+                                    obj[i]="";
+                                }
+                            }
+                        }
+                    }
+                    document.getElementById('formBody').innerHTML = doT.template(template)(jsonData);
+                    $('#header_table').show();
+                    $('#query-tableDiv').show();
+                    $('#formBody .task').click(function () {
+                        $('#formBody .task').find('td').css('background','#ffffff');
+                        var way = $(this).find('td').eq(2).html();
+                        var GUID = $(this).find('td').eq(6).html();
+                        android.print(way);
+                        android.print(GUID);
+                        android.openWin(way,GUID);
+                        $(this).find('td').css('background','#eeeeee')
+                    });
+                }
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

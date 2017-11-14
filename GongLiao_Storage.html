@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>集中供料</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/storage.css">
+    <link rel="stylesheet" href="css/mui.min.css">
+    <link rel="stylesheet" href="css/loading.css">
+</head>
+<body style="background: #ffffff;overflow: hidden">
+<div id="wrap-content" style="overflow: hidden;">
+    <div class="container tabDiv">
+        <div class="row">
+            <div class="col-xs-2 tab-item" style="margin-left: 10px;">
+                <p class="tab-p text-center active">护套料需求</p>
+            </div>
+            <div class="col-xs-2 tab-item">
+                <p class="tab-p text-center">钢铝带需求</p>
+            </div>
+            <div class="col-xs-2 tab-item">
+                <p class="tab-p text-center">护套料查看</p>
+            </div>
+        </div>
+    </div>
+    <div class="swiper-container" style="margin-top: 10px;">
+        <div class="swiper-wrapper">
+            <!--slide1-->
+            <div class="swiper-slide">
+                <div class="panel-body" style="padding: 10px;">
+                    <table id="header_table" class="table table-bordered" style="table-layout:fixed;">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th>需求工位</th>
+                            <th>等级</th>
+                            <th>料罐编号</th>
+                            <th>叫料时间</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div id="query-tableDiv" style="margin-top: -20px;overflow-y: auto;">
+                        <table id="jiaoliao_table" class="table table-bordered" style="table-layout:fixed;margin-bottom: 80px;">
+                            <tbody id="form_gongliao">
+                            <script type="text/template" charset="UTF-8" id="template">
+                                {{if(it && it.length>0){}}
+                                    {{for(var i=0; i < it.length; i++){}}
+                                        <tr class="task" id="taskjq{{=(i+1)}}">
+                                            <th class="index-th" scope="row" style="width: 50px;line-height: 65px;">{{=(i+1)}}</th>
+                                            <td class="antoLine">{{=it[i].MAC_CODE}}</td>
+                                            <td class="antoLine level">{{=it[i].ChildCode}}</td>
+                                            <td>
+                                                <select id="xgit-select{{=(i+1)}}" class="xgit-select"></select>
+                                            </td>
+                                            <td class="antoLine">{{=it[i].ToFeed_date}}</td>
+                                            <td style="display: none;">{{=it[i].Feed_Id}}</td>
+                                        </tr>
+                                    {{}}}
+                                {{}}}
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--slide2-->
+            <div class="swiper-slide">
+                <div class="panel-body" style="padding: 10px;">
+                    <table id="gld_header_table" class="table table-bordered" style="table-layout:fixed;">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th>需求工位</th>
+                            <th>名称</th>
+                            <th>型号</th>
+                            <th>重量(Kg)</th>
+                            <th>叫料时间</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div id="gld_query-tableDiv" style="overflow-y: auto;margin-top: -20px;">
+                        <table id="gld_table" class="table table-bordered" style="table-layout:fixed;">
+                            <tbody id="gld_form_gongliao">
+                            <script type="text/template" charset="UTF-8" id="template3">
+                                {{if(it && it.length>0){}}
+                                {{for(var i=0; i < it.length; i++){}}
+                                <tr class="task" id="task_gld{{=(i+1)}}">
+                                    <th class="index-th" scope="row" style="width: 50px;line-height: 55px;">{{=(i+1)}}</th>
+                                    <td class="antoLine">{{=it[i].MAC_CODE}}</td>
+                                    <td class="antoLine">{{=it[i].CNName}}</td>
+                                    <td class="antoLine">{{=it[i].Spec}}</td>
+                                    <td class="antoLine">{{=it[i].Weight}}</td>
+                                    <td class="antoLine">{{=it[i].ToFeed_date}}</td>
+                                    <td style="display: none;">{{=it[i].Feed_ID}}</td>
+                                </tr>
+                                {{}}}
+                                {{}}}
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--slide3-->
+            <div class="swiper-slide">
+                <div class="panel-body" style="padding: 10px;">
+                    <table id="header_table2" class="table table-bordered" style="table-layout:fixed;">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th>料罐编号</th>
+                            <th>原材料等级</th>
+                            <th>原材料名称</th>
+                            <th>规格</th>
+                            <th>批次号</th>
+                            <th>厂家</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div id="query-tableDiv2" style="overflow-y: auto;margin-top:-20px;">
+                        <table id="bcp-table" class="table table-bordered" style="margin-bottom: 100px;">
+                            <tbody id="formBody">
+                                <script type="text/template" charset="UTF-8" id="template2">
+                                    {{if(it && it.length>0){}}
+                                        {{for(var i=0; i < it.length; i++){}}
+                                            <tr class="task" id="task_daijian{{=(i+1)}}">
+                                                <th class="index-th text-center" scope="row" style="width: 50px;">{{=(i+1)}}</th>
+                                                <td>{{=it[i].M_Gno}}</td>
+                                                <td>{{=it[i].M_Level}}</td>
+                                                <td>{{=it[i].M_Name}}</td>
+                                                <td>{{=it[i].M_Type}}</td>
+                                                <td>{{=it[i].M_BatchNo}}</td>
+                                                <td>{{=it[i].M_Cj}}</td>
+                                            </tr>
+                                        {{}}}
+                                    {{}}}
+                                </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--loading-->
+<div id="loading" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+
+<!--actionsheet-->
+<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
+    <!-- 可选择菜单 -->
+    <ul class="mui-table-view">
+        <li class="mui-table-view-cell" onclick="receiveFinish()">
+            <a href="#">送料完成</a>
+        </li>
+    </ul>
+    <!-- 取消菜单 -->
+    <ul class="mui-table-view">
+        <li id="cancel-slide1-btn" class="mui-table-view-cell">
+            <a href="#sheet1"><b>取消</b></a>
+        </li>
+    </ul>
+</div>
+
+<!--actionsheet-->
+<div id="sheet2" class="mui-popover mui-popover-bottom mui-popover-action ">
+    <!-- 可选择菜单 -->
+    <ul class="mui-table-view">
+        <li class="mui-table-view-cell" onclick="updateMaterial()">
+            <a href="#">修改</a>
+        </li>
+        <!--<li class="mui-table-view-cell" onclick="addMaterial()">-->
+            <!--<a href="#">新增</a>-->
+        <!--</li>-->
+        <li class="mui-table-view-cell" onclick="deleteMaterial()">
+            <a href="#">清空</a>
+        </li>
+    </ul>
+    <!-- 取消菜单 -->
+    <ul class="mui-table-view">
+        <li id="cancel-slide2-btn" class="mui-table-view-cell">
+            <a href="#sheet2"><b>取消</b></a>
+        </li>
+    </ul>
+</div>
+
+<!--actionsheet-->
+<div id="sheet3" class="mui-popover mui-popover-bottom mui-popover-action ">
+    <!-- 可选择菜单 -->
+    <ul class="mui-table-view">
+        <li class="mui-table-view-cell" style="height: 60px;line-height: 40px;" onclick="gld_receiveFinish()">
+            <a href="#">送料完成</a>
+        </li>
+    </ul>
+    <!-- 取消菜单 -->
+    <ul class="mui-table-view">
+        <li id="cancel-slide3-btn" style="height: 60px;line-height: 40px;" class="mui-table-view-cell">
+            <a href="#sheet3"><b>取消</b></a>
+        </li>
+    </ul>
+</div>
+
+<!--新增原材料-->
+<div id="confirmDiv" style="display: none;border: 2px solid #3A89ED;z-index: 999;">
+    <div class="confirm_titleDiv row" style="margin:0px;">
+        <div class="">
+            <p id="confirm_title_p" class="text-center">新增原材料</p>
+        </div>
+    </div>
+    <div class="confirm_bodyDiv" style="margin:0px;height: 460px;overflow-y: auto;overflow-x: hidden;">
+        <div class="row itemDiv2">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <p class="input-title2 text-right pop-title">原材料名称：</p>
+            </div>
+            <div class="col-xs-5" style="padding: 0;">
+                <select id="M_Name"></select>
+            </div>
+        </div>
+        <div class="row itemDiv2" style="margin-top: 20px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <p class="input-title2 text-right pop-title">批次号：</p>
+            </div>
+            <div class="col-xs-5" style="padding: 0;">
+                <input id="M_BatchNo" type="text">
+            </div>
+        </div>
+        <div class="row itemDiv2" style="margin-top: 20px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <p class="input-title2 text-right pop-title">厂家：</p>
+            </div>
+            <div class="col-xs-5" style="padding: 0;">
+                <select id="M_Cj"></select>
+            </div>
+        </div>
+        <div class="row itemDiv2" style="margin-top: 20px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <p class="input-title2 text-right pop-title">规格型号：</p>
+            </div>
+            <div class="col-xs-5" style="padding: 0;">
+                <select id="M_Type"></select>
+            </div>
+        </div>
+        <div class="row itemDiv2" style="margin-top: 20px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <p class="input-title2 text-right pop-title">等级：</p>
+            </div>
+            <div class="col-xs-5" style="padding: 0;">
+                <div style="border: 1px solid #cccccc;height: 40px;">
+                    <select id="level_select" style="height: 36px;">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row itemDiv2" style="margin-top: 20px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <p class="input-title2 text-right pop-title">料罐编号：</p>
+            </div>
+            <div class="col-xs-5" style="padding: 0;">
+                <div style="border: 1px solid #cccccc;height: 40px;">
+                    <select id="guanLiao_select" style="height: 36px;">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="confirm_footerDiv row" style="margin:0px;margin-top: 30px;">
+        <div class="row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-5">
+                <p id="sure_btn" class="center-block text-center btn_p gradient" style="background: #3db746;color: #fff;" onclick="sureReceive()">确定</p>
+            </div>
+            <div class="col-xs-5">
+                <p id="cancle_btn" class="center-block text-center btn_p" style="background: #3db746;color: #ffffff;" onclick="cancleReceive()">取消</p>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+    </div>
+</div>
+
+<!--提示对话框-->
+<div id="alertDiv" style="display: none;border: 2px solid #3A89ED;z-index: 900">
+    <div class="confirm_titleDiv row" style="margin:0px;height: 40px;">
+        <div class="">
+            <p id="alert_title_p" class="text-center">提示消息</p>
+        </div>
+    </div>
+    <div class="confirm_bodyDiv row" style="margin:0px;height: 150px;overflow-y: auto">
+        <p id="alert_p" class="text-center" style="line-height: 150px" title=""></p>
+    </div>
+    <div class="confirm_footerDiv row" style="margin:0px;margin-top: 30px;">
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <div class="col-xs-4">
+                <p id="sure_btn2" class="center-block text-center btn_p gradient" style="background: #3db746;color: #fff;" onclick="sureAlert()">确定</p>
+            </div>
+            <div class="col-xs-4">
+                <p id="cancel_btn2" class="center-block text-center btn_p gradient" style="background: #3db746;color: #fff;" onclick="cancelAlert()">取消</p>
+            </div>
+            <div class="col-xs-2"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="js/doT.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript" src="js/mui.min.js"></script>
+<script type="text/javascript">
+    var template;
+    var template2;
+    var template3;
+    var my_macno;
+    var publicNum;
+    var publicNum_Material;
+    mui.init({
+        gestureConfig:{
+            longtap: true, //默认为false
+        }
+    });
+    $(function(){
+        android.windowReady();
+        $('#wrap-content').css('height',$(window).height()+'px');
+        template = document.getElementById('template').innerHTML;
+        template2 = document.getElementById('template2').innerHTML;
+        template3 = document.getElementById('template3').innerHTML;
+        initSwiper();//初始化swiper
+        $('#query-tableDiv').css('height',$(window).height()-$('.tabDiv').eq(0).height()-$('.queryDiv').eq(0).height());
+        $('#query-tableDiv').css('padding-bottom',$('.queryDiv').eq(0).height()+70);
+        $('#query-tableDiv2').css('height',$(window).height()-$('.tabDiv').eq(0).height()-$('.queryDiv').eq(0).height());
+        $('#query-tableDiv2').css('padding-bottom',$('.queryDiv').eq(0).height()+70);
+        $('#gld_query-tableDiv').css('height',$(window).height()-$('.tabDiv').eq(0).height()-$('.queryDiv').eq(0).height());
+        $('#gld_query-tableDiv').css('padding-bottom',$('.queryDiv').eq(0).height()+70);
+
+        initPopup(8);
+        //slide1点击取消时表格行颜色变成白色
+        $('#cancel-slide1-btn').on("touchstart", function(e) {
+            $('#form_gongliao > tr').find('td').css('background','#ffffff');
+        });
+        //slide2点击取消时表格行颜色变成白色
+        $('#cancel-slide2-btn').on("touchstart", function(e) {
+            $('#formBody > tr').find('td').css('background','#ffffff');
+        });
+        //slide2点击取消时表格行颜色变成白色
+        $('#cancel-slide3-btn').on("touchstart", function(e) {
+            $('#gld_form_gongliao > tr').find('td').css('background','#ffffff');
+        });
+        //根据原材料名称获取所有厂家名称
+        $('#M_Cj').click(function () {
+            var materialName = $('#M_Name').val();
+            if(materialName=="" || materialName==null){
+                android.showToast("请选择原材料名称");
+                return;
+            }
+            android.startLoading();
+            xgxx.ajax('SheathMaterial/GetCJList?callback=callback',{
+                data:{
+                    materialName:materialName
+                },
+                success: function (result, status) {
+                    android.endLoading();
+                    var jsonData = eval(result);
+                    if(jsonData.length>0){
+                        for(var i=0; i<jsonData.length; i++){
+                            $('#M_Cj').append("<option value='"+jsonData[i].ShortName+"'>"+jsonData[i].ShortName+"</option>");
+                        }
+                    }
+                },
+                error: function (error) {
+                    closeLoading();
+                    android.endLoading();
+                    android.print("错误"+JSON.stringify(error));
+                }
+            });
+        });
+
+        //根据原材料名称获取所有规格型号
+        $('#M_Type').click(function () {
+            var materialName = $('#M_Name').val();
+            if(materialName=="" || materialName==null){
+                android.showToast("请选择原材料名称");
+                return;
+            }
+            android.startLoading();
+            xgxx.ajax('SheathMaterial/GetXHList?callback=callback',{
+                data:{
+                    materialName:materialName
+                },
+                success: function (result, status) {
+                    android.endLoading();
+                    var jsonData = eval(result);
+                    if(jsonData.length>0){
+                        for(var i=0; i<jsonData.length; i++){
+                            $('#M_Type').append("<option value='"+jsonData[i].Spec+"'>"+jsonData[i].Spec+"</option>");
+                        }
+                    }
+                },
+                error: function (error) {
+                    closeLoading();
+                    android.endLoading();
+                    android.print("错误"+JSON.stringify(error));
+                }
+            });
+        });
+
+
+
+    });
+
+    //设置用户名
+    function setusername(username,server_Domain) {
+        xgxx.server_Domain=server_Domain;
+        myusername=username;
+        getJLneed_list();//获取叫料需求列表
+//        setTimeout(getGetLGList,1000);
+//        setTimeout(GetMLevelList,2000);
+
+    }
+
+    //初始化swiper
+    function initSwiper() {
+        $('.swiper-container').height($(window).height());
+        var mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: false,
+            onSlideChangeEnd: function(swiper){
+                $('.tab-p').removeClass('active');
+                $('.tab-p').eq(swiper.activeIndex).addClass('active');
+            }
+        });
+        $('.tab-p').click(function () {
+            mySwiper.slideTo($('.tab-p').index(this), 500, false);
+            $('.tab-p').removeClass('active');
+            $('.tab-p').eq(mySwiper.activeIndex).addClass('active');
+        });
+    }
+    //初始化弹窗
+    function initPopup(tableLength) {
+        var popHeight = pageHeight()*0.35;
+        //缆芯弹出框初始化
+        $('#confirmDiv').find('.confirm_titleDiv').css('height',popHeight*0.2+"px");
+        $('#confirmDiv').find('.confirm_footerDiv').css('height',popHeight*0.3+"px");
+        $('#confirm_title_p').css('line-height',popHeight*0.2+'px');
+        var footHeight=$('#confirmDiv').find('.confirm_footerDiv').height();
+        var infoHeight=$('#confirmDiv').find('.comfirm_infoDiv').height();
+        var headerHeight=$('#confirmDiv').find('.confirm_titleDiv').height();
+        $('#confirmDiv').css('height',footHeight+400+headerHeight+infoHeight+(popHeight*0.7)/2);
+        adjust(confirmDiv);
+    }
+    //初始化提示对话框
+    function initAlertDiv() {
+        adjust(alertDiv);
+    }
+    //获取叫料需求列表
+    function getJLneed_list() {
+        xgxx.ajax('SheathMaterial/GetTaskList?callback=callback',{
+            data:{
+            },
+            success: function (result, status) {
+                getGetLGList();
+                var jsonData = eval(result);
+                var mainJson=jsonData[0].sheathM_task;
+                mainJson = NullToBlank(mainJson);
+                console.log(JSON.stringify(mainJson));
+                //去除日期数据里的“T”
+                for(var i=0; i<mainJson.length; i++){
+                    var tempStr=mainJson[i].ToFeed_date.replace('T', ' ');
+                    mainJson[i].ToFeed_date=tempStr.substring(0,16);
+                }
+                document.getElementById('form_gongliao').innerHTML = doT.template(template)(mainJson);
+                var optionJson=jsonData[0].sheathM_task_downlist;
+                console.log(JSON.stringify(optionJson));
+                for(var i=0; i<mainJson.length; i++){
+                    var level=$('#form_gongliao tr').eq(i).find('td').eq(1).html();
+                    for(var j=0; j<optionJson.length; j++){
+                        if(optionJson[j].M_Level==level){
+                            $('#xgit-select'+(i+1)).append("<option value='"+optionJson[j].M_Gno+"'>"+optionJson[j].M_Gno+" ("+optionJson[j].M_Cj+"、"+optionJson[j].M_BatchNo+")"+"</option>");
+                        }
+                    }
+                }
+                //表格行垂直居中
+//                for(var i=0; i<$('#form_gongliao tr').length; i++){
+//                    $('#form_gongliao tr').eq(i).find('td').css('line-height', $('#form_gongliao tr').eq(i).height()-5+'px');
+//                    $('#form_gongliao tr').eq(i).find('th').css('line-height', $('#form_gongliao tr').eq(i).height()-5+'px');
+//                }
+                $('#form_gongliao td').css('line-height','55px');
+                $('#form_gongliao > tr').on('longtap',function(){
+                    var line_id = $(this).attr('id');
+                    var num = line_id.substring(line_id.length-1);
+                    publicNum = num;
+                    $('#form_gongliao > tr').find('td').css('background','#ffffff');
+                    $(this).find('td').css('background','#eeeeee');
+                    mui('#sheet1').popover('toggle');
+                });
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    //获取护套料查看料列表
+    function getMaterial() {
+        xgxx.ajax('SheathMaterial/GetMList?callback=callback',{
+            data:{
+            },
+            success: function (result, status) {
+                getGldNeedList();//获取钢铝带需求列表
+                var jsonData = eval(result);
+                jsonData = NullToBlank(jsonData);
+                document.getElementById('formBody').innerHTML = doT.template(template2)(jsonData);
+                $('#formBody > tr').on('longtap',function(){
+                    var line_id = $(this).attr('id');
+                    var num = line_id.substring(line_id.length-1);
+                    publicNum_Material = num;
+                    $('#formBody > tr').find('td').css('background','#ffffff');
+                    $(this).find('td').css('background','#eeeeee');
+                    mui('#sheet2').popover('toggle');
+                });
+
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+    
+    //获取钢铝带需求列表
+    function getGldNeedList() {
+        xgxx.ajax('SheathMaterial/GetGLDTaskList?callback=callback',{
+            data:{
+            },
+            success: function (result, status) {
+                getMaterialName();
+                var jsonData = eval(result);
+                if(jsonData.gld_toFeed.length>0){
+                    var jsonData = eval(result.gld_toFeed);
+                    android.print(JSON.stringify(jsonData));
+                    //去除日期数据里的“T”
+                    for(var i=0; i<jsonData.length; i++){
+                        var tempStr=jsonData[i].ToFeed_date.replace('T', ' ');
+                        jsonData[i].ToFeed_date=tempStr.substring(0,16);
+                    }
+                    jsonData = NullToBlank(jsonData);
+                    document.getElementById('gld_form_gongliao').innerHTML = doT.template(template3)(jsonData);
+                    $('#gld_form_gongliao td').css('line-height','55px');
+                    $('#gld_form_gongliao > tr').on('longtap',function(){
+                        var line_id = $(this).attr('id');
+                        var num = line_id.substring(line_id.length-1);
+                        publicNum = num;
+                        $('#gld_form_gongliao > tr').find('td').css('background','#ffffff');
+                        $(this).find('td').css('background','#eeeeee');
+                        mui('#sheet3').popover('toggle');
+                    });
+                }
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+
+    //获取原材料名称(用于修改料罐信息)
+    function getMaterialName() {
+        xgxx.ajax('SheathMaterial/GetMatNameList?callback=callback',{
+            data:{
+            },
+            success: function (result, status) {
+                var jsonData = eval(result);
+                android.print(JSON.stringify(jsonData));
+                if(jsonData.length>0){
+                    for(var i=0; i<jsonData.length; i++){
+                        $('#M_Name').append("<option value='"+jsonData[i].CNName+"'>"+jsonData[i].CNName+"</option>");
+                    }
+                }
+            },
+            error: function (error) {
+                closeLoading();
+                android.print(error);
+            }
+        });
+    }
+
+    //actionsheet点击送料完成时
+    function receiveFinish() {
+        var select_val=$('#jiaoliao_table > tbody > tr:eq('+(publicNum-1)+') td:eq(2)').find('select').text();
+        if(select_val=="" || select_val ==null || select_val.length==0){
+            var pc_str="";
+            var supply_str="";
+        }else{
+            var str_start=(select_val.indexOf("(")+1);
+            var str_end=(select_val.indexOf(")"));
+            var tempStr=select_val.substring(str_start,str_end);
+            var pc_str=tempStr.split("、")[1];
+            var supply_str=tempStr.split("、")[0];
+        }
+        var taskid=$('#jiaoliao_table > tbody > tr:eq('+(publicNum-1)+') td:eq(4)').html();
+        showLoading();
+        android.print("taskid:"+taskid);
+        android.print("pc:"+pc_str);
+        android.print("supp:"+supply_str);
+        xgxx.ajax('SheathMaterial/ChanFeedStatus?callback=callback',{
+            data:{
+                taskid:taskid,
+                pc:pc_str,
+                supp:supply_str
+            },
+            success: function (result, status) {
+                closeLoading();
+                console.log(result);
+                window.location.reload();//刷新当前页面
+                android.showToast(result);
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+        mui('#sheet1').popover('toggle');
+    }
+    
+    //钢铝带送料完成
+    function gld_receiveFinish() {
+        var taskid=$('#gld_table > tbody > tr:eq('+(publicNum-1)+') td:eq(5)').html();
+        android.startLoading();
+        xgxx.ajax('SheathMaterial/ChanGLDFeedStatus?callback=callback',{
+            data:{
+                taskid:taskid
+            },
+            success: function (result, status) {
+                android.endLoading();
+                android.showToast(result);
+                window.location.reload();//刷新当前页面
+            },
+            error: function (error) {
+                android.endLoading();
+            }
+        });
+        mui('#sheet3').popover('toggle');
+    }
+    
+    
+    //slide2获取罐料列表
+    function getGetLGList() {
+        xgxx.ajax('SheathMaterial/GetLGList?callback=callback',{
+            data:{
+            },
+            success: function (result, status) {
+                GetMLevelList();
+                closeLoading();
+                var jsonData = eval(result);
+                console.log(JSON.stringify(jsonData));
+                for(var i=0; i<jsonData.length; i++){
+                    $('#guanLiao_select').append("<option value='"+jsonData[i].料罐编号名称+"'>"+jsonData[i].料罐编号名称+"</option>");
+                }
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+    //slide2获取等级列表
+    function GetMLevelList() {
+        xgxx.ajax('SheathMaterial/GetMLevelList?callback=callback',{
+            data:{
+            },
+            success: function (result, status) {
+                getMaterial();//获取原材料列表
+                closeLoading();
+                var jsonData = eval(result);
+                console.log(JSON.stringify(jsonData));
+                for(var i=0; i<jsonData.length; i++){
+                    $('#level_select').append("<option value='"+jsonData[i].等级+"'>"+jsonData[i].等级+"</option>");
+                }
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+    //原材料录入保存按钮
+    $('#sure-btn2').click(function () {
+        var M_Name=$('#M_Name').val();//原材料名称
+        var M_BatchNo=$('#M_BatchNo').val();//批次号
+        var M_Cj=$('#M_Cj').val();//厂家
+        var M_Type=$('#M_Type').val();//规格型号
+        var M_Level=$('#level_select').val();//等级
+        var M_Gno=$('#guanLiao_select').val();//罐料编号
+
+        if(M_Name==null || M_Name=="" || M_Name.length==0){
+            android.showToast("原材料名称不能为空");
+            return;
+        }
+        if(M_BatchNo==null || M_BatchNo=="" || M_BatchNo.length==0){
+            android.showToast("批次号不能为空");
+            return;
+        }
+        if(M_Cj==null || M_Cj=="" || M_Cj.length==0){
+            android.showToast("厂家不能为空");
+            return;
+        }
+        if(M_Type==null || M_Type=="" || M_Type.length==0){
+            android.showToast("规格型号不能为空");
+            return;
+        }
+        var jsonObj={};
+        jsonObj['M_Name']=M_Name;
+        jsonObj['M_BatchNo']=M_BatchNo;
+        jsonObj['M_Cj']=M_Cj;
+        jsonObj['M_Type']=M_Type;
+        jsonObj['M_Level']=M_Level;
+        jsonObj['M_Gno']=M_Gno;
+
+        console.log(JSON.stringify(jsonObj));
+        android.startLoading();
+        xgxx.ajax('SheathMaterial/SheathMBasic?callback=callback',{
+            data:{
+                mainjson:JSON.stringify(jsonObj)
+            },
+            success: function (result, status) {
+                android.endLoading();
+                closeLoading();
+                console.log(result);
+                android.showToast(result);
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                console.log("错误"+JSON.stringify(error));
+            }
+        });
+    });
+
+    //取消按钮
+    $('#cancel-btn2').click(function () {
+        $('#M_Name').val("");
+        $('#M_BatchNo').val("");
+        $('#M_Cj').val("");
+        $('#M_Type').val("");
+    });
+
+    //更新原材料信息
+    function updateMaterial() {
+        mui('#sheet2').popover('toggle');
+        $('#confirm_title_p').html('修改原材料信息');
+        $('#M_Name').val($('#formBody tr').eq(publicNum_Material-1).find('td').eq(2).html());//原材料名称
+        $('#M_BatchNo').val($('#formBody tr').eq(publicNum_Material-1).find('td').eq(4).html());//批次号
+        $('#M_Cj').val($('#formBody tr').eq(publicNum_Material-1).find('td').eq(5).html());//厂家
+        $('#M_Type').val($('#formBody tr').eq(publicNum_Material-1).find('td').eq(3).html());//规格型号
+        $('#level_select').val($('#formBody tr').eq(publicNum_Material-1).find('td').eq(1).html());//原材料等级
+        $('#guanLiao_select').val($('#formBody tr').eq(publicNum_Material-1).find('td').eq(0).html());//料罐编号
+        $('#guanLiao_select').attr('disabled','disabled');
+        $('#confirmDiv').show();
+    }
+    
+    //新增原材料信息
+    function addMaterial() {
+        mui('#sheet2').popover('toggle');
+        $('#confirm_title_p').html('新增原材料信息');
+        $('#M_Name').val("");//原材料名称
+        $('#M_BatchNo').val("");//批次号
+        $('#M_Cj').val("");//厂家
+        $('#M_Type').val("");//规格型号
+        $('#level_select').val("");//原材料等级
+        $('#guanLiao_select').val($('#formBody tr').eq(publicNum_Material-1).find('td').eq(0).html());//料罐编号
+        $('#guanLiao_select').attr('disabled','disabled');
+        $('#confirmDiv').show();
+    }
+    
+    //删除原材料信息
+    function deleteMaterial() {
+        mui('#sheet2').popover('toggle');
+        initAlertDiv();
+        $('#alert_p').html("是否清空"+$('#formBody tr').eq(publicNum_Material-1).find('td').eq(0).html()+"料罐原材料信息");
+        $('#alertDiv').show();
+        $ ("#alert_p").attr("title",$('#formBody tr').eq(publicNum_Material-1).find('td').eq(0).html());
+    }
+
+    //弹出框取消按钮
+    function cancelAlert() {
+        $('#alertDiv').hide();
+    }
+
+    //点击确定按钮删除当前条目
+    function sureAlert() {
+        var M_Gno = $("#alert_p").attr("title");
+        android.startLoading();
+        xgxx.ajax('SheathMaterial/SheathMDelete?callback=callback',{
+            data:{
+                M_Gno:M_Gno
+            },
+            success: function (result, status) {
+                android.endLoading();
+                closeLoading();
+                android.showToast(result);
+                window.location.reload();//刷新当前页面
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                console.log("错误"+JSON.stringify(error));
+            }
+        });
+        $('#alertDiv').hide();
+    }
+
+    //修改或新增确定按钮
+    function sureReceive() {
+        var M_Name=$('#M_Name').val();//原材料名称
+        var M_BatchNo=$('#M_BatchNo').val();//批次号
+        var M_Cj=$('#M_Cj').val();//厂家
+        var M_Type=$('#M_Type').val();//规格型号
+        var M_Level=$('#level_select').val();//等级
+        var M_Gno=$('#guanLiao_select').val();//罐料编号
+
+        if(M_Name==null || M_Name=="" || M_Name.length==0){
+            android.showToast("原材料名称不能为空");
+            return;
+        }
+        if(M_BatchNo==null || M_BatchNo=="" || M_BatchNo.length==0){
+            android.showToast("批次号不能为空");
+            return;
+        }
+        if(M_Cj==null || M_Cj=="" || M_Cj.length==0){
+            android.showToast("厂家不能为空");
+            return;
+        }
+        if(M_Type==null || M_Type=="" || M_Type.length==0){
+            android.showToast("规格型号不能为空");
+            return;
+        }
+        var jsonObj={};
+        jsonObj['M_Name']=M_Name;
+        jsonObj['M_BatchNo']=M_BatchNo;
+        jsonObj['M_Cj']=M_Cj;
+        jsonObj['M_Type']=M_Type;
+        jsonObj['M_Level']=M_Level;
+        jsonObj['M_Gno']=M_Gno;
+
+        console.log(JSON.stringify(jsonObj));
+        android.startLoading();
+        xgxx.ajax('SheathMaterial/SheathMBasic?callback=callback',{
+            data:{
+                mainjson:JSON.stringify(jsonObj)
+            },
+            success: function (result, status) {
+                android.endLoading();
+                closeLoading();
+                $('#confirmDiv').hide();
+                android.showToast(result);
+                window.location.reload();//刷新当前页面
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                console.log("错误"+JSON.stringify(error));
+            }
+        });
+    }
+    function cancleReceive() {
+        $('#confirmDiv').hide();
+    }
+
+</script>
+</body>
+</html>

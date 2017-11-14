@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>生产状况(当班次)</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/zhuose.css">
+    <link rel="stylesheet" href="css/loading.css">
+</head>
+<body>
+<!--<div id="titleDiv">-->
+    <!--<h3 class="center-block text-center">今日生产状况</h3>-->
+<!--</div>-->
+<!--柱状图-->
+<div id="ColumnDiv" class="center-block"></div>
+<!--表格 -->
+<div class="panel-body" style="padding: 10px;">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 60px;"></th>
+                </tr>
+            </thead>
+            <tbody id="formBody_product">
+                <tr class="task"><th class="index-th" scope="row">准时完成</th></tr>
+                <tr class="task"><th class="index-th" scope="row">延期完成</th></tr>
+                <tr class="task"><th class="index-th" scope="row">未完成</th></tr>
+                <tr class="task"><th class="index-th" scope="row">延期未完成</th></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--loading-->
+<div id="loading" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+
+<script type="text/javascript" src="js/doT.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/echarts.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript">
+
+    var myMacno;
+
+    $(function () {
+        android.windowReady();
+    });
+
+    function setMacno(macno,server_Domain){
+        xgxx.server_Domain=server_Domain;
+        myMacno=macno;
+        getData(myMacno);
+    }
+
+    function getData(Macno) {
+        $('#ColumnDiv').css("width",$('#ColumnDiv').parent().width()*0.9);
+        $('#ColumnDiv').css("height",$('#ColumnDiv').width()*0.4);
+        var ColumnDiv = echarts.init(document.getElementById('ColumnDiv'));
+        android.startLoading();
+
+        if(Macno=='mac000'){
+            setTimeout(function () {
+                android.endLoading();
+            },1000);
+            var jsonData = eval('[{"IDD":"1","GYTA-24φ1.84*5":"100","GYTA-24φ1.95*5":"0","GYTA53-24φ1.84*6":"124"},{"IDD":"2","GYTA-24φ1.84*5":"0","GYTA-24φ1.95*5":"130","GYTA53-24φ1.84*6":"0"},{"IDD":"3","GYTA-24φ1.84*5":"53.125","GYTA-24φ1.95*5":"260","GYTA53-24φ1.84*6":"75.010"},{"IDD":"4","GYTA-24φ1.84*5":"120","GYTA-24φ1.95*5":"110","GYTA53-24φ1.84*6":"168"}]');
+            //获取所有列名数组
+            var count=0;
+            var columnData=[];
+            for (var key in jsonData[0]) {
+                columnData[count]=key;
+                count++;
+            }
+            columnData.splice(0,1);//删除第一列,
+
+            if(columnData.length==0){
+                android.showToast("无数据");
+            }
+
+            //获取正常完成数组
+            var normal_finishData=[];//正常完成数据
+            var count=0;
+            for (var key in jsonData[0]) {
+                normal_finishData[count]=jsonData[0][key];
+                count++;
+            }
+            normal_finishData.splice(0,1);
+
+
+            //获取延期完成数组
+            var delay_finishData=[];//延期完成数据
+            var count=0;
+            for (var key in jsonData[1]) {
+                delay_finishData[count]=jsonData[1][key];
+                count++;
+            }
+            delay_finishData.splice(0,1);
+            console.log(delay_finishData);
+
+
+            //获取未完成数组
+            var unfinishData=[];//未完成数据
+            var count=0;
+            for (var key in jsonData[2]) {
+                unfinishData[count]=jsonData[2][key];
+                count++;
+            }
+            unfinishData.splice(0,1);
+            console.log(unfinishData);
+            //获取延期未完成数组
+            var delay_unfinishData=[];//延期完成数据
+            var count=0;
+            for (var key in jsonData[3]) {
+                delay_unfinishData[count]=jsonData[3][key];
+                count++;
+            }
+            delay_unfinishData.splice(0,1);
+            //让堆叠柱状图不显示数据为零的柱子
+            var normal_finishData_Echarts=[];
+            for(var i=0;i<normal_finishData.length;i++){
+                if(normal_finishData[i]=='0'){
+                    normal_finishData_Echarts[i]='-';
+                }else{
+                    normal_finishData_Echarts[i]=normal_finishData[i];
+                }
+            }
+
+            var delay_finishData_Echarts=[];
+            for(var i=0;i<delay_finishData.length;i++){
+                if(delay_finishData[i]=='0'){
+                    delay_finishData_Echarts[i]='-';
+                }else{
+                    delay_finishData_Echarts[i]=delay_finishData[i];
+                }
+            }
+
+            var unfinishData_Echarts=[];
+            for(var i=0;i<unfinishData.length;i++){
+                if(unfinishData[i]=='0'){
+                    unfinishData_Echarts[i]='-';
+                }else{
+                    unfinishData_Echarts[i]=unfinishData[i];
+                }
+            }
+            var delay_unfinishData_Echarts=[];
+            for(var i=0;i<delay_unfinishData.length;i++){
+                if(delay_unfinishData[i]=='0'){
+                    delay_unfinishData_Echarts[i]='-';
+                }else{
+                    delay_unfinishData_Echarts[i]=delay_unfinishData[i];
+                }
+            }
+            option = {
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['准时完成','延期完成','未完成','延期未完成'],
+                    selectedMode:false
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                yAxis:  {
+                    type: 'value',
+                    name:'长度(km)'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: columnData,//X轴每一列的列名
+                    axisLabel:{
+                        interval:0,
+                        rotate:-16
+                    }
+                },
+                color: ['#00B050','#3C7BC8','#C00000','#FFC000'],
+                series: [
+                    {
+                        name: '准时完成',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'inside'
+                            }
+                        },
+                        data: normal_finishData_Echarts
+                    },
+                    {
+                        name: '延期完成',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'inside'
+                            }
+                        },
+                        data: delay_finishData_Echarts
+                    },
+                    {
+                        name: '延期未完成',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'inside'
+                            }
+                        },
+                        data: delay_unfinishData_Echarts
+                    },
+                    {
+                        name: '未完成',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'inside'
+                            }
+                        },
+                        data: unfinishData_Echarts
+                    },
+                ]
+            };
+            ColumnDiv.setOption(option);
+            //展示表格
+            console.log("lala:"+JSON.stringify(jsonData));
+            for(var i=0; i<columnData.length; i++){
+                var tableHtml = $("table thead tr").html();
+                var addColumn = '<th>'+columnData[i]+'</th>';
+                tableHtml=tableHtml+addColumn;
+                $("table thead tr").html(tableHtml);
+            }
+            for(var j=0; j<4; j++){
+                var th_html;
+                //生成表格
+                for(var i=0; i<columnData.length; i++){
+                    th_html= $('#formBody_product tr').eq(j).html();
+                    var addColumn = '<td></td>';
+                    th_html=th_html+addColumn;
+                    $('#formBody_product tr').eq(j).html(th_html);
+                }
+                //填充数据
+                switch (j){
+                    case 0:
+                        for(var k=0; k<columnData.length; k++){
+                            $('#formBody_product tr').eq(j).find('td').eq(k).html(normal_finishData[k]);
+                        }
+                        break;
+                    case 1:
+                        for(var k=0; k<columnData.length; k++){
+                            $('#formBody_product tr').eq(j).find('td').eq(k).html(delay_finishData[k]);
+                        }
+                        break;
+                    case 2:
+                        for(var k=0; k<columnData.length; k++){
+                            $('#formBody_product tr').eq(j).find('td').eq(k).html(unfinishData[k]);
+                        }
+                        break;
+                    case 3:
+                        for(var k=0; k<columnData.length; k++){
+                            $('#formBody_product tr').eq(j).find('td').eq(k).html(delay_unfinishData[k]);
+                        }
+                        break;
+                }
+            }
+            return;
+        }
+
+        xgxx.ajax('SheathExec/GetSheathAnalysisBYSPEC?callback=callback',{
+            data:{
+                dtime:'2017-07-03 08:30',
+                maccode:Macno
+            },
+            success: function (result, status) {
+                android.endLoading();
+                closeLoading();
+                var jsonData = eval(result.Data);
+                //把null替换成0
+                for(var j=0; j<jsonData.length; j++){
+                    var obj = jsonData[j];
+                    for(var i in obj) {
+                        if(Object.prototype.hasOwnProperty.call(obj,i)) { //过滤
+                            if(obj[i]==null){
+                                obj[i]=0;
+                            }
+                        }
+                    }
+                }
+
+                //获取所有列名数组
+                var count=0;
+                var columnData=[];
+                for (var key in jsonData[0]) {
+                    columnData[count]=key;
+                    count++;
+                }
+                columnData.splice(0,1);//删除第一列,
+
+                if(columnData.length==0){
+                    android.showToast("无数据");
+                }
+
+                //获取正常完成数组
+                var normal_finishData=[];//正常完成数据
+                var count=0;
+                for (var key in jsonData[0]) {
+                    normal_finishData[count]=jsonData[0][key];
+                    count++;
+                }
+                normal_finishData.splice(0,1);
+
+
+                //获取延期完成数组
+                var delay_finishData=[];//延期完成数据
+                var count=0;
+                for (var key in jsonData[1]) {
+                    delay_finishData[count]=jsonData[1][key];
+                    count++;
+                }
+                delay_finishData.splice(0,1);
+                console.log(delay_finishData);
+
+
+                //获取未完成数组
+                var unfinishData=[];//未完成数据
+                var count=0;
+                for (var key in jsonData[2]) {
+                    unfinishData[count]=jsonData[2][key];
+                    count++;
+                }
+                unfinishData.splice(0,1);
+                console.log(unfinishData);
+
+
+                //获取延期未完成数组
+                var delay_unfinishData=[];//延期完成数据
+                var count=0;
+                for (var key in jsonData[3]) {
+                    delay_unfinishData[count]=jsonData[3][key];
+                    count++;
+                }
+                delay_unfinishData.splice(0,1);
+                console.log(delay_unfinishData);
+
+//                android.print("normal_finishData:"+normal_finishData);
+//                android.print("delay_finishData:"+delay_finishData);
+//                android.print("unfinishData:"+unfinishData);
+//                android.print("delay_unfinishData:"+delay_unfinishData);
+                //让堆叠柱状图不显示数据为零的柱子
+                var normal_finishData_Echarts=[];
+                for(var i=0;i<normal_finishData.length;i++){
+                    if(normal_finishData[i]=='0'){
+                        normal_finishData_Echarts[i]='-';
+                    }else{
+                        normal_finishData_Echarts[i]=normal_finishData[i];
+                    }
+                }
+
+                var delay_finishData_Echarts=[];
+                for(var i=0;i<delay_finishData.length;i++){
+                    if(delay_finishData[i]=='0'){
+                        delay_finishData_Echarts[i]='-';
+                    }else{
+                        delay_finishData_Echarts[i]=delay_finishData[i];
+                    }
+                }
+
+                var unfinishData_Echarts=[];
+                for(var i=0;i<unfinishData.length;i++){
+                    if(unfinishData[i]=='0'){
+                        unfinishData_Echarts[i]='-';
+                    }else{
+                        unfinishData_Echarts[i]=unfinishData[i];
+                    }
+                }
+
+                var delay_unfinishData_Echarts=[];
+                for(var i=0;i<delay_unfinishData.length;i++){
+                    if(delay_unfinishData[i]=='0'){
+                        delay_unfinishData_Echarts[i]='-';
+                    }else{
+                        delay_unfinishData_Echarts[i]=delay_unfinishData[i];
+                    }
+                }
+
+//                android.print("normal_finishData:"+normal_finishData_Echarts);
+//                android.print("delay_finishData:"+delay_finishData_Echarts);
+//                android.print("unfinishData:"+unfinishData_Echarts);
+//                android.print("delay_unfinishData:"+delay_unfinishData_Echarts);
+
+                option = {
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: ['准时完成','延期完成','未完成','延期未完成'],
+                        selectedMode:false
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    yAxis:  {
+                        type: 'value',
+                        name:'长度(km)'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: columnData,//X轴每一列的列名
+                        axisLabel:{
+                            interval:0,
+                            rotate:-16
+                        }
+                    },
+                    color: ['#00B050','#3C7BC8','#C00000','#FFC000'],
+                    series: [
+                        {
+                            name: '准时完成',
+                            type: 'bar',
+                            stack: '总量',
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'inside'
+                                }
+                            },
+                            data: normal_finishData_Echarts
+                        },
+                        {
+                            name: '延期完成',
+                            type: 'bar',
+                            stack: '总量',
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'inside'
+                                }
+                            },
+                            data: delay_finishData_Echarts
+                        },
+                        {
+                            name: '延期未完成',
+                            type: 'bar',
+                            stack: '总量',
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'inside'
+                                }
+                            },
+                            data: delay_unfinishData_Echarts
+                        },
+                        {
+                            name: '未完成',
+                            type: 'bar',
+                            stack: '总量',
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'inside'
+                                }
+                            },
+                            data: unfinishData_Echarts
+                        },
+                    ]
+                };
+                ColumnDiv.setOption(option);
+
+
+                //展示表格
+                console.log("lala:"+JSON.stringify(jsonData));
+                for(var i=0; i<columnData.length; i++){
+                    var tableHtml = $("table thead tr").html();
+                    var addColumn = '<th>'+columnData[i]+'</th>';
+                    tableHtml=tableHtml+addColumn;
+                    $("table thead tr").html(tableHtml);
+                }
+                for(var j=0; j<4; j++){
+                    var th_html;
+                    //生成表格
+                    for(var i=0; i<columnData.length; i++){
+                        th_html= $('#formBody_product tr').eq(j).html();
+                        var addColumn = '<td></td>';
+                        th_html=th_html+addColumn;
+                        $('#formBody_product tr').eq(j).html(th_html);
+                    }
+                    //填充数据
+                    switch (j){
+                        case 0:
+                            for(var k=0; k<columnData.length; k++){
+                                $('#formBody_product tr').eq(j).find('td').eq(k).html(normal_finishData[k]);
+                            }
+                            break;
+                        case 1:
+                            for(var k=0; k<columnData.length; k++){
+                                $('#formBody_product tr').eq(j).find('td').eq(k).html(delay_finishData[k]);
+                            }
+                            break;
+                        case 2:
+                            for(var k=0; k<columnData.length; k++){
+                                $('#formBody_product tr').eq(j).find('td').eq(k).html(unfinishData[k]);
+                            }
+                            break;
+                        case 3:
+                            for(var k=0; k<columnData.length; k++){
+                                $('#formBody_product tr').eq(j).find('td').eq(k).html(delay_unfinishData[k]);
+                            }
+                            break;
+                    }
+                }
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+</script>
+</body>
+</html>

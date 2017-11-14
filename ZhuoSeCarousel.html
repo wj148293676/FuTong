@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>着色工序执行</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/zhuose.css">
+    <link rel="stylesheet" href="css/loading.css">
+</head>
+<body>
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide" style="background: white;overflow-y: hidden;">
+            <div class="page-group">
+                <div class="page page-current">
+                    <!-- 你的html代码 -->
+                    <h5 class="page-title">设备任务</h5>
+                    <div class="panel-body" style="padding: 10px;">
+                        <table id="header_table" class="table table-bordered" style="table-layout:fixed;">
+                            <thead>
+                            <tr>
+                                <th style="width: 50px;">序号</th>
+                                <th>厂家</th>
+                                <th>种类</th>
+                                <th>商业长度</th>
+                                <th>盘数</th>
+                                <th>颜色</th>
+                                <th style="display: none;">状态</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <div id="query-tableDiv" style="margin-top: -20px;">
+                            <div id="tablebodyDiv" style="width: 100%;overflow-y: auto;">
+                                <table class="table table-bordered" style="table-layout:fixed;">
+                                    <tbody id="formBody">
+                                    <script type="text/template" charset="UTF-8" id="template">
+                                        {{if(it && it.length>0){}}
+                                        {{for(var i=0; i < it.length; i++){}}
+                                        <tr class="task" id="task{{=(i+1)}}">
+                                            <th class="index-th" scope="row" style="width: 50px;">{{=(i+1)}}</th>
+                                            <td>{{=it[i].SupplierCode}}</td>
+                                            <td>{{=it[i].ZsfType}}</td>
+                                            <td>{{=it[i].CommercialLength}}</td>
+                                            <td>{{=it[i].panNum}}</td>
+                                            <td>{{=it[i].ZsColorCode}}</td>
+                                            <td style="display: none;">{{=it[i].MatRecStatus}}</td>
+                                        </tr>
+                                        <tr id="taskshow{{=(i+1)}}" class="task-show" style="display: none;">
+                                            <td colspan="6">
+                                                <div class="row line-row">
+                                                    <div class="col-md-3 col-xs-3">
+                                                        <p class="text-center hujiao-title">呼叫数</p>
+                                                        <div class="text-center hujiao-number callnum"></div>
+                                                    </div>
+                                                    <div class="col-md-3 col-xs-3">
+                                                        <p class="text-center hujiao-title">已送数</p>
+                                                        <div class="text-center hujiao-number receivenum"></div>
+                                                    </div>
+                                                    <div class="col-md-3 col-xs-3">
+                                                        <p class="text-center hujiao-title">待送数</p>
+                                                        <div class="text-center hujiao-number waitnum"></div>
+                                                    </div>
+                                                    <div class="col-md-3 col-xs-3">
+                                                        <div class="row">
+                                                            <div class="col-xs-4" style="margin: 0;">
+                                                                <p class="text-right waiting-time-title" style="margin-left: 15px;">等待时间:</p>
+                                                            </div>
+                                                            <div class="col-xs-8">
+                                                                <p class="text-left waiting-time" style="margin-left: 20px;"></p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <button class="order-btn gradient" data-MatRecStatus="">叫料</button>
+                                                            <p class="btn-status"></p>
+                                                            <p class="shelfvalue" style="display: none;"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {{}}}
+                                        {{}}}
+                                    </script>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-slide">
+            <h5 class="page-title">生产、质量统计分析（当班次）</h5>
+            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <div class="container">
+                <div class="pi_titleDiv row">
+                    <h3 class="center-block text-center"></h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-xs-6" style="padding: 0;margin-bottom: -20px;">
+                        <h3 class="text-center center-block">生产状况</h3>
+                        <div id="productDiv" class="center-block pieDiv" onclick="openShowActivity('product')"></div>
+                    </div>
+                    <div class="col-md-6 col-xs-6" style="padding: 0;margin-bottom: -20px;">
+                        <h3 class="text-center center-block">质量状况</h3>
+                        <div id="qulityDiv" class="center-block pieDiv" onclick="openShowActivity('qulity')"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-slide">
+            <h5 class="page-title">待检</h5>
+            <div class="panel-body" style="padding: 10px;">
+                <table id="daijian_table" class="table table-bordered" style="table-layout:fixed;">
+                    <thead>
+                    <tr>
+                        <th style="width: 50px;">序号</th>
+                        <th style="width: 120px;">着色纤编号</th>
+                        <th>着色纤种类</th>
+                        <th>规格</th>
+                        <th>长度(m)</th>
+                        <th>作业人员</th>
+                        <th style="width: 160px;">作业时间</th>
+                        <th>状态</th>
+                    </tr>
+                    </thead>
+                </table>
+                <div id="query-tableDiv2" style="margin-top: -20px;">
+                    <div id="tablebodyDiv2" style="width: 100%;overflow-y: auto;">
+                        <table class="table table-bordered" style="table-layout:fixed;">
+                            <tbody id="formBody_daijian">
+                            <script type="text/template" charset="UTF-8" id="template_daijian">
+                                {{if(it && it.length>0){}}
+                                {{for(var i=0; i < it.length; i++){}}
+                                <tr class="task" id="task_daijian{{=(i+1)}}">
+                                    <th class="index-th" scope="row" style="width: 50px;">{{=(i+1)}}</th>
+                                    <td class="antoLine" style="width: 120px;">{{=it[i].着色纤编码}}</td>
+                                    <td class="antoLine">{{=it[i].着色纤种类}}</td>
+                                    <td class="antoLine">{{=it[i].颜色}}</td>
+                                    <td class="antoLine">{{=it[i].长度}}</td>
+                                    <td class="antoLine">{{=it[i].作业人员}}</td>
+                                    <td class="antoLine" style="width: 160px;">{{=it[i].作业时间}}</td>
+                                    <td class="antoLine">{{=it[i].状态}}</td>
+                                </tr>
+                                {{}}}
+                                {{}}}
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--loading-->
+<div id="loading" class="spinner" style="z-index: 1000;">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+
+<!--弹出框-确认收料-(缆芯弹框)-->
+<div id="confirmDiv">
+    <div class="confirm_titleDiv row" style="margin:0px;">
+        <div class="">
+            <p id="confirm_title_p" class="text-center">收 料 确 认</p>
+        </div>
+    </div>
+    <div class="confirm_bodyDiv row" style="margin:0px;">
+
+        <div class="panel-body" style="padding: 10px;">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>厂家</th>
+                        <th>种类</th>
+                        <th>商业长度</th>
+                        <th>叫料盘数</th>
+                        <th>取料方式</th>
+                        <th>取料位置</th>
+                        <th style="width: 80px;">已收盘数</th>
+                    </tr>
+                    </thead>
+                    <tbody id="formBody_confirm">
+                        <tr class="confirm_task">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><input type="text" class="confirm_received_num" style="width: 80px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="confirm_footerDiv row" style="margin:0px;">
+        <div class="row">
+            <div class="col-xs-6">
+                <p id="sure_btn" class="center-block text-center btn_p gradient" style="background: #3db746;color: #fff;" onclick="sureReceive()">确定</p>
+            </div>
+            <div class="col-xs-6">
+                <p id="cancle_btn" class="center-block text-center btn_p" style="background: #3db746;color: #ffffff;" onclick="cancleReceive()">取消</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!--提示对话框-->
+<div id="alertDiv" style="display: none;border: 2px solid #3A89ED;">
+    <div class="confirm_titleDiv row" style="margin:0px;">
+        <div class="">
+            <p id="alert_title_p" class="text-center">提示消息</p>
+        </div>
+    </div>
+    <div class="confirm_bodyDiv row" style="margin:0px;height: 150px;overflow-y: auto">
+        <p id="alert_p" class="text-center" style="line-height: 150px"></p>
+    </div>
+    <div class="confirm_footerDiv row" style="margin:0px;margin-top: 30px;">
+        <div class="row">
+            <div class="col-xs-3"></div>
+            <div class="col-xs-6">
+                <p id="sure_btn2" class="center-block text-center btn_p gradient" style="background: #3db746;color: #fff;" onclick="sureAlert()">确定</p>
+            </div>
+            <div class="col-xs-3"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="js/doT.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="js/echarts.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript">
+    var template;
+    var template_daijian;
+    var my_macno;
+    var Timer;
+    var publicNum;
+    var myusername;
+    $(function(){
+//        xgxx.server_Domain= "http://10.100.2.11:8095/";
+        android.windowReady();
+        $('#tablebodyDiv').height(windowHeight()-$('#header_table').height()-60);
+        $('#tablebodyDiv2').height(windowHeight()-$('#daijian_table').height()-60);
+        template = document.getElementById('template').innerHTML;
+        template_daijian = document.getElementById('template_daijian').innerHTML;
+        initSwiper();//初始化swiper
+        initPopup();
+        initAlertDiv();
+    });
+    //设置用户名
+    function setusername(username) {
+        myusername=username;
+    }
+    //设置第一台设备信息
+    function setFirstDevice(device_code) {
+        getTaskList(device_code);
+    }
+    //初始化消息对话框
+    function initAlertDiv() {
+        adjust(alertDiv);
+    }
+    //提示对话框的确定按钮
+    function sureAlert() {
+        $('#alertDiv').hide();
+    }
+    //初始化swiper
+    function initSwiper() {
+        $('.swiper-container').height($(window).height());
+        var mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: false,
+            onSlideChangeEnd: function(swiper){
+                android.choose_tab(swiper.activeIndex+1);
+            }
+        });
+    }
+
+    //初始化弹窗
+    function initPopup() {
+        var popHeight = pageHeight()*0.35;
+        //缆芯弹出框初始化
+        $('#confirmDiv').css('height',popHeight);
+        $('#confirmDiv').find('.confirm_titleDiv').css('height',popHeight*0.2+"px");
+        $('#confirmDiv').find('.confirm_bodyDiv').css('height',popHeight*0.6+"px");
+        $('#confirmDiv').find('.confirm_footerDiv').css('height',popHeight*0.2+"px");
+        $('#confirmDiv').find('.btn_p').css('margin-top',(popHeight*0.2-40)/2-25+"px");
+        $('#confirm_title_p').css('line-height',popHeight*0.2+'px');
+        adjust(confirmDiv);
+    }
+    //获取任务列表
+    function getTaskList(macno,server_Domain) {
+        xgxx.server_Domain=server_Domain;
+        my_macno=macno;
+        document.getElementById('formBody').innerHTML = doT.template(template)("");
+        document.getElementById('formBody_daijian').innerHTML = doT.template(template_daijian)("");
+        android.startLoading();
+
+        if(my_macno=='mac000'){
+            setTimeout(function () {
+                closeLoading();
+                android.endLoading();
+            },1000);
+            var jsonData = eval('[{"SupplierCode":"SFC","ZsColorCode":"红","ZsfType":"B1.3","CommercialLength":49,"panNum":3,"MatRecStatus":"2","ProductNum":0,"groupid":1},{"SupplierCode":"CFO","ZsColorCode":"红","ZsfType":"B1.3","CommercialLength":2.04,"panNum":3,"MatRecStatus":"2","ProductNum":0,"groupid":2},{"SupplierCode":"CFO","ZsColorCode":"红","ZsfType":"B1.3","CommercialLength":3.04,"panNum":3,"MatRecStatus":"0","ProductNum":0,"groupid":3}]');
+            document.getElementById('formBody').innerHTML = doT.template(template)(jsonData);
+            initEcharts();
+            $('.task').click(function () {
+                var line_id = $(this).attr('id');
+                var num = $(this).find('th').eq(0).html();
+                publicNum = num;
+                if($("#taskshow"+num).is(":hidden")){
+                    $('.task-show').hide();
+                    $("#taskshow"+num).show();
+                    var color=$('#task'+num).find('td').eq(0).css('background-color');
+                    if(color=='rgb(29, 149, 63)'){
+                        $('#taskshow'+num).find('.receivenum').eq(0).html(3);
+                        $('#taskshow'+num).find('.waitnum').eq(0).html(0);
+                        $('#taskshow'+num).find('.callnum').eq(0).html(3);
+                        $('#taskshow'+num).find('.shelfvalue').eq(0).html(null);
+                    }else{
+                        $('#taskshow'+num).find('.receivenum').eq(0).html(0);
+                        $('#taskshow'+num).find('.waitnum').eq(0).html(3);
+                        $('#taskshow'+num).find('.callnum').eq(0).html(3);
+                        $('#taskshow'+num).find('.shelfvalue').eq(0).html(null);
+                    }
+
+                    $("#taskshow"+num).find('.order-btn').eq(0).click(function () {
+                        if(parseInt(publicNum)>1){
+                            var color=$('#task'+(num-1)).find('td').eq(0).css('background-color');
+                            if(color=='rgb(29, 149, 63)'){
+                                $('#confirmDiv').find('td').eq(0).html("SFC");//厂家
+                                $('#confirmDiv').find('td').eq(1).html("B1.3");//种类
+                                $('#confirmDiv').find('td').eq(2).html("49");//商业长度
+                                $('#confirmDiv').find('td').eq(3).html("3");//叫料数
+                                $('#confirmDiv').find('td').eq(4).html("人工");//取料方式
+                                $('#confirmDiv').find('td').eq(5).html("车架1#");//取料位置
+                                $('#confirmDiv').find('input').eq(0).val("3");
+                                $('#confirmDiv').show();
+                            }else{
+                                $('#alert_p').html("前一任务没有收料完成,不能叫料");
+                                $('#alertDiv').show();
+                                return;
+                            }
+                        }else{
+                            $('#confirmDiv').find('td').eq(0).html("SFC");//厂家
+                            $('#confirmDiv').find('td').eq(1).html("B1.3");//种类
+                            $('#confirmDiv').find('td').eq(2).html("49");//商业长度
+                            $('#confirmDiv').find('td').eq(3).html("3");//叫料数
+                            $('#confirmDiv').find('td').eq(4).html("人工");//取料方式
+                            $('#confirmDiv').find('td').eq(5).html("车架1#");//取料位置
+                            $('#confirmDiv').find('input').eq(0).val("3");
+                            $('#confirmDiv').show();
+                        }
+                    });
+
+                }else{
+                    $("#taskshow"+num).hide();
+                }
+            });
+        }else{
+            xgxx.ajax('BepaintExecute/GetTaskList?callback=callback',{
+                data:{
+                    macno:my_macno
+                },
+                success: function (result, status) {
+                    initEcharts();//初始化echarts
+                    closeLoading();
+                    var jsonData = eval(result);
+//                    android.print("获取任务列表====================："+JSON.stringify(jsonData));
+//                    android.print("jsonData长度："+jsonData.length);
+//                    android.print("jsonData内容："+JSON.stringify(jsonData));
+                    document.getElementById('formBody').innerHTML = doT.template(template)(jsonData);
+                    //如果该行为已收料，则变成绿色
+                    for(var k=1; k<=jsonData.length; k++){
+                        if($("#task"+k).find('td').eq(5).html()=='2'){
+                            $("#task"+k).find('td').css('background','#1d953f');
+                        }
+                    }
+                    $('.task').click(function () {
+                        var line_id = $(this).attr('id');
+                        var num = $(this).find('th').eq(0).html();
+                        publicNum = num;
+                        if($("#taskshow"+num).is(":hidden")){
+                            $('.task-show').hide();
+                            $("#taskshow"+num).show();
+                            var suppliercode = $(this).children('td').eq(0)[0].innerHTML;//厂商
+                            var zsftype = $(this).children('td').eq(1)[0].innerHTML;//种类
+                            var commerciallength = $(this).children('td').eq(2)[0].innerHTML;//商业长度
+                            var panNum = $(this).children('td').eq(3)[0].innerHTML;//盘数
+                            var taskcolor = $(this).children('td').eq(4)[0].innerHTML;//盘数
+                            //如果MatRecStatus=2则不请求展开接口，按钮禁用
+                            if($("#task"+num).find('td').eq(5).html()=='2'){
+                                $("#task"+num).find('td').css('background','#1d953f');
+                                $("#taskshow"+num).find('.order-btn').eq(0).css('background','#cccccc');
+                                $("#taskshow"+num).find('.order-btn').eq(0).attr('disabled','disabled');
+                                $('#taskshow'+num).find('.receivenum').eq(0).html(panNum);
+                                $('#taskshow'+num).find('.callnum').eq(0).html('0');
+                                $('#taskshow'+num).find('.waitnum').eq(0).html('0');
+                                return;
+                            }
+                            OpenApsTask(suppliercode,zsftype,commerciallength,panNum,taskcolor,num);//任务表展开 num--行数
+                        }else{
+                            $("#taskshow"+num).hide();
+                        }
+                    });
+                },
+                error: function (error) {
+                    android.endLoading();
+                }
+            });
+        }
+    }
+    //任务表展开
+    function OpenApsTask(suppliercode,zsftype,commerciallength,panNum,taskcolor,num){
+        showLoading();
+//        clearInterval(Timer);
+        android.startLoading();
+        xgxx.ajax('BepaintExecute/OpenApsTask?callback=callback',{
+            data:{
+                macno:my_macno,
+                suppliercode:suppliercode,
+                zsftype:zsftype,
+                commerciallength:commerciallength,
+                taskcolor:taskcolor
+            },
+            success: function (result, status) {
+                closeLoading();
+                android.endLoading();
+                var jsonData = eval(result);
+                var CallNum=parseInt(jsonData[0].CallNum);//呼叫数
+                var ReceiveNum=parseInt(jsonData[0].ReceiveNum);//已送数
+                if(ReceiveNum==null){
+                    ReceiveNum=0;
+                }
+                $('#taskshow'+num).find('.receivenum').eq(0).html(ReceiveNum.toString());
+                $('#taskshow'+num).find('.shelfvalue').eq(0).html(jsonData[0].VINGuid);
+                //记录按钮当前状态 0—显示叫料；1—显示收料；2—显示叫料
+                $('#taskshow'+num).find('.btn-status').eq(0).html(jsonData[0].MatRecStatus);
+                //计算待送数
+                var receiveNum = parseInt(ReceiveNum.toString());
+                var waitNum=parseInt(panNum)-receiveNum//待送数
+                $('#taskshow'+num).find('.waitnum').html(waitNum);
+                android.print("waitNum:"+parseInt(waitNum));
+                android.print("CallNum:"+CallNum);
+                if(waitNum<CallNum){
+                    $('#taskshow'+num).find('.callnum').eq(0).html(waitNum.toString());
+                }else{
+                    $('#taskshow'+num).find('.callnum').eq(0).html(CallNum.toString());
+                }
+
+                //根据状态 按钮显示 叫料/收料
+                var matRecStatus = jsonData[0].MatRecStatus;
+                if(matRecStatus==null){
+                    $('#taskshow'+num).find('.receivenum').html(0);
+                    $('#taskshow'+num).find('.waitnum').html(panNum);
+                }
+                if(matRecStatus == "1"){
+                    $('#taskshow'+num).find('.order-btn').html("收料");
+//                    var time = (jsonData[0].CallMatTime).replace('T',' ');
+//                    microSecond = getWaitMinuts(time);//相差毫秒数
+//                    TimerStart(microSecond,num);
+                }else if(matRecStatus == "2"){
+                    $('#taskshow'+num).find('.order-btn').html("叫料");
+                }
+                //如果待送数为0，则该行为绿色，叫料按钮禁用
+                if(waitNum == 0){
+                    $("#taskshow"+num).find('.order-btn').eq(0).css('background','#cccccc');
+                    $("#taskshow"+num).find('.order-btn').eq(0).attr('disabled','disabled');
+                    $("#task"+num).find('td').css('background','#1d953f');
+                }
+                $("#taskshow"+num).find('.order-btn').eq(0).click(function () {
+//                    $(this).attr('disabled',true);
+                    var btn_status=$(this).siblings('.btn-status').eq(0).html();
+                    var hujiao_num=parseInt($('#taskshow'+num).find('.callnum').eq(0).html());//呼叫数
+                    var waitting_num=parseInt($('#taskshow'+num).find('.waitnum').eq(0).html());//代送数
+
+                    android.print('hujiao_num:'+hujiao_num);
+
+                    if(hujiao_num==undefined || hujiao_num=="" || hujiao_num==null || isNaN(hujiao_num)){
+                        android.showToast('呼叫数获取失败，请重新刷新页面');
+                        return;
+                    }
+
+                    if($('#taskshow'+num).find('.order-btn').html()=="叫料"){
+                        jiaoliaoFun(CallNum,waitNum,ReceiveNum);//叫料
+                    }else if($('#taskshow'+num).find('.order-btn').html()=="收料"){
+                        getAGVstatus();
+                    }
+                });
+            },
+            error: function (error) {
+                android.endLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+    //叫料
+    function jiaoliaoFun(CallNum,waitNum,ReceiveNum) {
+        if(parseInt(publicNum)>1){
+            if($("#task"+(parseInt(publicNum)-1)).find('td').eq(5).html()!='2'){
+                $('#alert_p').html("前一任务没有收料完成,不能叫料");
+                $('#alertDiv').show();
+                return;
+            }
+        }
+        var SupplierCode=$('#task'+publicNum).find('td').eq(0).html();//厂家
+        var ZsfType=$('#task'+publicNum).find('td').eq(1).html();//种类
+        var CommercialLength=$('#task'+publicNum).find('td').eq(2).html();//商业长度
+        var TaskColor=$('#task'+publicNum).find('td').eq(4).html();//商业长度
+        var jsonObj={};
+        if(waitNum<CallNum){
+            jsonObj['CallNum']=waitNum;//呼叫数
+        }else{
+            jsonObj['CallNum']=CallNum;//呼叫数
+        }
+        jsonObj['MatRecStatus']=1;//呼料状态
+        jsonObj['TaskColor']=TaskColor;//着色任务颜色
+        jsonObj['DeliverType']=2;//送货类型 (1-AGV; 2-人工)
+        jsonObj['CommercialLength']=CommercialLength;//商业长度
+        jsonObj['ZsfType']=ZsfType;//型号
+        jsonObj['SupplierCode']=SupplierCode;//厂商
+        jsonObj['SumWorkStatus']=1;//叫料汇总任务状态
+        jsonObj['MacNo']=my_macno;//设备机台号
+        jsonObj['createuser']=myusername;//创建者
+        jsonObj['updateuser']=myusername;//更新者
+
+        android.print(JSON.stringify(jsonObj));
+        android.startLoading();
+        showLoading();
+        var sendCallNum = jsonObj['CallNum'];
+        xgxx.ajax('BepaintExecute/SaveCallMat?callback=callback',{
+            data:{
+                mainJson:JSON.stringify(jsonObj),
+                top_num:sendCallNum
+            },
+            success: function (result, status) {
+                android.endLoading();
+                closeLoading();
+                if(result=='czyjl'){
+                    android.showToast("该设备已经对此任务叫料");
+//                    getTaskList(my_macno);
+                    refreashList(my_macno)
+                    return;
+                }
+                if(result=="保存成功"){
+                    android.showToast("叫料成功！");
+//                    window.location.reload();//刷新当前页面
+                    var hujiao_num=parseInt($('#taskshow'+publicNum).find('.callnum').eq(0).html());//呼叫数
+                    var waitting_num=parseInt($('#taskshow'+publicNum).find('.waitnum').eq(0).html());//代送数
+                    var factory = $('#task'+publicNum).find('td').eq(0).html();//厂家
+                    var zsftype = $('#task'+publicNum).find('td').eq(1).html();//种类
+                    var commerciallength = $('#task'+publicNum).find('td').eq(2).html();//商业长度
+                    $('#confirmDiv').find('td').eq(0).html(factory);//厂家
+                    $('#confirmDiv').find('td').eq(1).html(zsftype);//种类
+                    $('#confirmDiv').find('td').eq(2).html(commerciallength);//商业长度
+                    if(waitting_num<hujiao_num){
+                        $('#confirmDiv').find('td').eq(3).html(waitting_num);//叫料数
+                    }else{
+                        $('#confirmDiv').find('td').eq(3).html(hujiao_num);//叫料数
+                    }
+                    $('#confirmDiv').find('td').eq(4).html("人工");//取料方式
+                    $('#confirmDiv').find('td').eq(5).html();//取料位置
+                    $('#confirmDiv').find('input').eq(0).val($('#confirmDiv').find('td').eq(3).html());
+                    $('#confirmDiv').show();
+                }else{
+                    android.showToast("叫料失败，请重新叫料");
+                }
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                android.print(JSON.stringify(error));
+            }
+        });
+    }
+
+    //获取AGV状态
+    function getAGVstatus() {
+        xgxx.ajax('BepaintExecute/AGVStatus?callback=callback',{
+            data:{},
+            success: function (result, status) {
+                closeLoading();
+                console.log(JSON.stringify(result));
+                var AGV_status = JSON.stringify(result);
+                var hujiao_num=parseInt($('#taskshow'+publicNum).find('.callnum').eq(0).html());//呼叫数
+                var waitting_num=parseInt($('#taskshow'+publicNum).find('.waitnum').eq(0).html());//代送数
+                var factory = $('#task'+publicNum).find('td').eq(0).html();//厂家
+                var zsftype = $('#task'+publicNum).find('td').eq(1).html();//种类
+                var commerciallength = $('#task'+publicNum).find('td').eq(2).html();//商业长度
+                $('#confirmDiv').find('td').eq(0).html(factory);//厂家
+                $('#confirmDiv').find('td').eq(1).html(zsftype);//种类
+                $('#confirmDiv').find('td').eq(2).html(commerciallength);//商业长度
+                if(waitting_num<hujiao_num){
+                    $('#confirmDiv').find('td').eq(3).html(waitting_num);//叫料数
+                }else{
+                    $('#confirmDiv').find('td').eq(3).html(hujiao_num);//叫料数
+                }
+                $('#confirmDiv').find('td').eq(4).html("人工");//取料方式
+                $('#confirmDiv').find('td').eq(5).html($('#taskshow'+publicNum).find('.shelfvalue').eq(0).html());//取料位置
+                $('#confirmDiv').find('input').eq(0).val($('#confirmDiv').find('td').eq(3).html());
+                $('#confirmDiv').show();
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    //确认收料
+    function sureReceive() {
+        if(my_macno=="mac000"){
+            android.showToast("收料成功");
+            $('#confirmDiv').hide();
+
+            $("#taskshow"+publicNum).find('.order-btn').eq(0).css('background','#cccccc');
+            $("#taskshow"+publicNum).find('.order-btn').eq(0).attr('disabled','disabled');
+            $("#task"+publicNum).find('td').css('background','#1d953f');
+            $('.task-show').hide();
+            refreashList(my_macno);
+            return;
+        }
+        var receiveNum_input = parseInt($('#confirmDiv').find('.confirm_received_num').eq(0).val());//实际本次收料数
+        var receiveNum=parseInt($('#confirmDiv').find('td').eq(3).html());
+        if(receiveNum_input>receiveNum){
+            android.showToast("收料数不能大于叫料数！");
+            return;
+        }
+        if(receiveNum>0){
+            var SupplierCode=$('#task'+publicNum).find('td').eq(0).html();//厂家
+            var ZsfType=$('#task'+publicNum).find('td').eq(1).html();//种类
+            var CommercialLength=$('#task'+publicNum).find('td').eq(2).html();//商业长度
+            var panNum=$('#task'+publicNum).find('td').eq(3).html();//总盘数
+            var WaitRece=parseInt($('#taskshow'+publicNum).find('.waitnum').eq(0).html());//待送数
+            var jsonObj={};
+            jsonObj['SupplierCode']=SupplierCode;
+            jsonObj['ZsfType']=ZsfType;
+            jsonObj['CommercialLength']=CommercialLength;
+            jsonObj['panNum']=panNum;
+            jsonObj['MacNo']=my_macno;
+            jsonObj['WaitRece']=WaitRece;
+            jsonObj['ReceiveNum']=receiveNum_input;
+            android.print("收料json：=========================="+JSON.stringify(jsonObj));
+            android.startLoading();
+            xgxx.ajax('BepaintExecute/ReceMatConfirm?callback=callback',{
+                data:{
+                    paraJson:JSON.stringify(jsonObj)
+                },
+                success: function (result, status) {
+                    android.endLoading();
+                    closeLoading();
+                    android.print(JSON.stringify(result));
+                    if(result=='ysl'){
+                        android.showToast("该设备已收料");
+                        $('#confirmDiv').hide();
+                        refreashList(my_macno);
+                        return;
+                    }
+                    if(result=="收料成功"){
+                        android.showToast("收料成功！");
+                        var newWaitRece=WaitRece-receiveNum_input;
+                        if(newWaitRece==0){
+                            //receivenum
+                            $('#taskshow'+publicNum).find('.receivenum').html(panNum);
+                            $('#taskshow'+publicNum).find('.waitnum').html(newWaitRece);
+                            $("#taskshow"+publicNum).find('.order-btn').eq(0).css('background','#cccccc');
+                            $("#taskshow"+publicNum).find('.order-btn').eq(0).attr('disabled','disabled');
+//                            $("#taskshow"+publicNum).find('.line-row').eq(0).css('background','#1d953f');
+                            $("#task"+publicNum).find('td').css('background','#1d953f');
+                            $('#confirmDiv').hide();
+//                            getTaskList(my_macno);
+                            refreashList(my_macno);
+                        }else{
+//                            window.location.reload();//刷新当前页面
+                            $('#confirmDiv').hide();
+//                            getTaskList(my_macno);
+                            refreashList(my_macno);
+                        }
+                    }
+                },
+                error: function (error) {
+                    android.endLoading();
+                    closeLoading();
+                    android.print(JSON.stringify(error));
+                    alert("错误"+JSON.stringify(error));
+                }
+            });
+        }else{
+            android.showToast("请填写已收盘数");
+            console.log("请填写已收盘数")
+        }
+    }
+
+    //计算等待毫秒数
+    function getWaitMinuts(time) {
+        var date = new Date(time);
+        var date_now=new Date();
+        var date_cha=date_now.getTime()-date.getTime();
+//        return Math.floor((date_cha/60000));
+        return date_cha;//返回毫秒差
+    }
+    //开启计时器
+    function TimerStart(microSecond,num) {
+        if(microSecond<60000){
+            var myminutes=0;
+        }else{
+            var myminutes = parseInt(microSecond/60000);
+        }
+        var second=parseInt((microSecond-myminutes*60000)/1000);
+        Timer = setInterval(function () {
+            if(second<10){
+                $('#taskshow'+num).find('.waiting-time').html(myminutes+":0"+second);
+                second++;
+            }else if(second>59){
+                myminutes = myminutes+1;
+                second=0;
+                $('#taskshow'+num).find('.waiting-time').html(myminutes+":0"+second);
+                second++;
+            }else if(second>10 || second<=59){
+                $('#taskshow'+num).find('.waiting-time').html(myminutes+":"+second);
+                second++;
+            }
+        },1000);
+    }
+    //取消收料
+    function cancleReceive() {
+        if(my_macno=="mac000"){
+            $('#confirmDiv').hide();
+//            getTaskList(my_macno);
+            return;
+        }
+        hideOverlay();//显示遮罩框
+//        clearInterval(Timer);
+        $('#confirmDiv').hide();
+        android.print("刷新列表:"+my_macno);
+//        getTaskList(my_macno);
+        document.getElementById('formBody').innerHTML = doT.template(template)("");
+        document.getElementById('formBody_daijian').innerHTML = doT.template(template_daijian)("");
+        android.startLoading();
+        xgxx.ajax('BepaintExecute/GetTaskList?callback=callback',{
+            data:{
+                macno:my_macno
+            },
+            success: function (result, status) {
+                android.endLoading();
+                var jsonData = eval(result);
+                document.getElementById('formBody').innerHTML = doT.template(template)(jsonData);
+                //如果该行为已收料，则变成绿色
+                for(var k=1; k<=jsonData.length; k++){
+                    if($("#task"+k).find('td').eq(5).html()=='2'){
+                        $("#task"+k).find('td').css('background','#1d953f');
+                    }
+                }
+                $('.task').click(function () {
+                    var line_id = $(this).attr('id');
+                    var num = $(this).find('th').eq(0).html();
+                    publicNum = num;
+                    if($("#taskshow"+num).is(":hidden")){
+                        $('.task-show').hide();
+                        $("#taskshow"+num).show();
+                        var suppliercode = $(this).children('td').eq(0)[0].innerHTML;//厂商
+                        var zsftype = $(this).children('td').eq(1)[0].innerHTML;//种类
+                        var commerciallength = $(this).children('td').eq(2)[0].innerHTML;//商业长度
+                        var panNum = $(this).children('td').eq(3)[0].innerHTML;//盘数
+                        var taskcolor = $(this).children('td').eq(4)[0].innerHTML;//盘数
+                        //如果MatRecStatus=2则不请求展开接口，按钮禁用
+                        if($("#task"+num).find('td').eq(5).html()=='2'){
+                            $("#task"+num).find('td').css('background','#1d953f');
+                            $("#taskshow"+num).find('.order-btn').eq(0).css('background','#cccccc');
+                            $("#taskshow"+num).find('.order-btn').eq(0).attr('disabled','disabled');
+                            $('#taskshow'+num).find('.receivenum').eq(0).html(panNum);
+                            $('#taskshow'+num).find('.callnum').eq(0).html('0');
+                            $('#taskshow'+num).find('.waitnum').eq(0).html('0');
+                            return;
+                        }
+                        OpenApsTask(suppliercode,zsftype,commerciallength,panNum,taskcolor,num);//任务表展开 num--行数
+                    }else{
+                        $("#taskshow"+num).hide();
+                    }
+                });
+            },
+            error: function (error) {
+                android.endLoading();
+            }
+        });
+    }
+
+    //仅刷新任务列表
+    function refreashList(macno) {
+        if(macno=="mac000"){
+            $('.task-show').hide();
+            return;
+        }
+        xgxx.ajax('BepaintExecute/GetTaskList?callback=callback',{
+            data:{
+                macno:macno
+            },
+            success: function (result, status) {
+                closeLoading();
+                var jsonData = eval(result);
+                console.log(JSON.stringify(jsonData));
+                android.print("获取任务列表====================："+JSON.stringify(jsonData));
+                document.getElementById('formBody').innerHTML = doT.template(template)(jsonData);
+                //如果该行为已收料，则变成绿色
+                for(var k=1; k<=jsonData.length; k++){
+                    if($("#task"+k).find('td').eq(5).html()=='2'){
+                        $("#task"+k).find('td').css('background','#1d953f');
+                    }
+                }
+                $('.task').click(function () {
+                    var line_id = $(this).attr('id');
+                    var num = $(this).find('th').eq(0).html();
+                    publicNum = num;
+                    if($("#taskshow"+num).is(":hidden")){
+                        $('.task-show').hide();
+                        $("#taskshow"+num).show();
+                        var suppliercode = $(this).children('td').eq(0)[0].innerHTML;//厂商
+                        var zsftype = $(this).children('td').eq(1)[0].innerHTML;//种类
+                        var commerciallength = $(this).children('td').eq(2)[0].innerHTML;//商业长度
+                        var panNum = $(this).children('td').eq(3)[0].innerHTML;//盘数
+                        var taskcolor = $(this).children('td').eq(4)[0].innerHTML;//盘数
+                        //如果MatRecStatus=2则不请求展开接口，按钮禁用
+                        if($("#task"+num).find('td').eq(5).html()=='2'){
+                            $("#task"+num).find('td').css('background','#1d953f');
+                            $("#taskshow"+num).find('.order-btn').eq(0).css('background','#cccccc');
+                            $("#taskshow"+num).find('.order-btn').eq(0).attr('disabled','disabled');
+                            $('#taskshow'+num).find('.receivenum').eq(0).html(panNum);
+                            $('#taskshow'+num).find('.callnum').eq(0).html('0');
+                            $('#taskshow'+num).find('.waitnum').eq(0).html('0');
+                            return;
+                        }
+                        OpenApsTask(suppliercode,zsftype,commerciallength,panNum,taskcolor,num);//任务表展开 num--行数
+                    }else{
+                        $("#taskshow"+num).hide();
+                    }
+                });
+            },
+            error: function (error) {
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+
+    /**
+     * 统计分析
+     *
+     */
+    function initEcharts() {
+        //设置容器的宽高
+        $('#productDiv').css("width",$('#productDiv').parent().width()*0.96);
+        $('#productDiv').css("height",$('#productDiv').width()+140+'px');
+        $('#qulityDiv').css("width",$('#qulityDiv').parent().width()*0.96);
+        $('#qulityDiv').css("height",$('#qulityDiv').width()+140+'px');
+        showLoading();
+        getProductData();
+    }
+    //获取生产状况数据
+    function getProductData() {
+        var productChart = echarts.init(document.getElementById('productDiv'));
+        if(my_macno=="mac000"){
+            getQulityData();
+            var normal_finish=12;//1准时完成
+            var delay_finish=48;//2延期完成
+            var unfinish=25;//3未完成
+            var delay_unfinish=15;//4延期未完成
+            var total_length=100;//5合格长度
+            option = {
+                title: {
+                    text: '生产总长度',
+                    subtext: total_length+'km',
+                    x: 'center',
+                    y: 'center',
+                    textStyle: {
+                        fontWeight: 'normal',
+                        fontSize: 16
+                    },
+                    subtextStyle:{
+                        color:'#019BF8',
+                        fontWeight:'bold',
+                        fontSize: 20
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{b}: {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    bottom:"0",
+                    data:['准时完成','延期完成','未完成','延期未完成'],
+                    selectedMode:false
+                },
+                color: ['#00B050','#3C7BC8','#FFC000','#C00000'],
+                series: [
+                    {
+                        name:'访问来源',
+                        type:'pie',
+                        radius: ['45%', '70%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'outside',
+                                formatter:'{d} %'
+                            }
+                        },
+                        data:[
+                            {value:normal_finish, name:'准时完成',itemStyle:{
+                                normal:{
+                                    label:{
+                                        show: function(){
+                                            if(normal_finish == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        position: 'outside',
+                                        formatter: '{d}%',
+                                        textStyle:{
+                                            color:'#888888',
+                                            fontSize:'15'
+                                        }
+                                    },
+                                    labelLine :{
+                                        show:function(){
+                                            if(normal_finish == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        length:2,
+                                        smooth:0
+                                    }
+                                }
+                            }},
+                            {value:delay_finish, name:'延期完成',itemStyle:{
+                                normal:{
+                                    label:{
+                                        show: function(){
+                                            if(delay_finish == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        position: 'outside',
+                                        formatter: '{d}%',
+                                        textStyle:{
+                                            color:'#888888',
+                                            fontSize:'15'
+                                        }
+                                    },
+                                    labelLine :{
+                                        show:function(){
+                                            if(delay_finish == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        length:2,
+                                        smooth:0
+                                    }
+                                }
+                            }},
+                            {value:unfinish, name:'未完成',itemStyle:{
+                                normal:{
+                                    label:{
+                                        show: function(){
+                                            if(unfinish == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        position: 'outside',
+                                        formatter: '{d}%',
+                                        textStyle:{
+                                            color:'#888888',
+                                            fontSize:'15'
+                                        }
+                                    },
+                                    labelLine :{
+                                        show:function(){
+                                            if(unfinish == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        length:2,
+                                        smooth:0
+                                    }
+                                }
+                            }},
+                            {value:delay_unfinish, name:'延期未完成',itemStyle:{
+                                normal:{
+                                    label:{
+                                        show: function(){
+                                            if(delay_unfinish == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        position: 'outside',
+                                        formatter: '{d}%',
+                                        textStyle:{
+                                            color:'#888888',
+                                            fontSize:'15'
+                                        }
+                                    },
+                                    labelLine :{
+                                        show:function(){
+                                            if(delay_unfinish == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        length:2,
+                                        smooth:0
+                                    }
+                                }
+                            }}
+                        ]
+                    }
+                ],
+                color: ['#00B050','#3C7BC8','#FFC000','#C00000']
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            productChart.setOption(option);
+            return;
+        }else{
+            xgxx.ajax('BepaintExecute/GetProductionStatus',{
+                data:{
+                    callback:'callback',
+                    ProcessCode:"sys002",
+                    Macno:my_macno
+                },
+                success: function (result, status) {
+                    closeLoading();
+                    getQulityData();
+                    var jsonData = eval(result);
+//                    console.log(JSON.stringify(jsonData));
+                    var normal_finish=jsonData[0].zswc;//1准时完成
+                    var delay_finish=jsonData[0].yqwc;//2延期完成
+                    var unfinish=jsonData[0].wwc;//3未完成
+                    var delay_unfinish=jsonData[0].yqwwc;//4延期未完成
+                    var total_length=jsonData[0].sczcd;//5合格长度
+
+                    option = {
+                        title: {
+                            text: '生产总长度',
+                            subtext: total_length+'km',
+                            x: 'center',
+                            y: 'center',
+                            textStyle: {
+                                fontWeight: 'normal',
+                                fontSize: 16
+                            },
+                            subtextStyle:{
+                                color:'#019BF8',
+                                fontWeight:'bold',
+                                fontSize: 20
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: "{b}: {c} ({d}%)"
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            bottom:"0",
+                            data:['准时完成','延期完成','未完成','延期未完成'],
+                            selectedMode:false
+                        },
+                        color: ['#00B050','#3C7BC8','#FFC000','#C00000'],
+                        series: [
+                            {
+                                name:'访问来源',
+                                type:'pie',
+                                radius: ['45%', '70%'],
+                                avoidLabelOverlap: false,
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: 'outside',
+                                        formatter:'{d} %'
+                                    }
+                                },
+                                data:[
+                                    {value:normal_finish, name:'准时完成',itemStyle:{
+                                        normal:{
+                                            label:{
+                                                show: function(){
+                                                    if(normal_finish == 0){
+                                                        return false;
+                                                    }else{
+                                                        return true;
+                                                    }
+                                                }(),
+                                                position: 'outside',
+                                                formatter: '{d}%',
+                                                textStyle:{
+                                                    color:'#888888',
+                                                    fontSize:'15'
+                                                }
+                                            },
+                                            labelLine :{
+                                                show:function(){
+                                                    if(normal_finish == 0){
+                                                        return false;
+                                                    }else{
+                                                        return true;
+                                                    }
+                                                }(),
+                                                length:2,
+                                                smooth:0
+                                            }
+                                        }
+                                    }},
+                                    {value:delay_finish, name:'延期完成',itemStyle:{
+                                        normal:{
+                                            label:{
+                                                show: function(){
+                                                    if(delay_finish == 0){
+                                                        return false;
+                                                    }else{
+                                                        return true;
+                                                    }
+                                                }(),
+                                                position: 'outside',
+                                                formatter: '{d}%',
+                                                textStyle:{
+                                                    color:'#888888',
+                                                    fontSize:'15'
+                                                }
+                                            },
+                                            labelLine :{
+                                                show:function(){
+                                                    if(delay_finish == 0){
+                                                        return false;
+                                                    }else{
+                                                        return true;
+                                                    }
+                                                }(),
+                                                length:2,
+                                                smooth:0
+                                            }
+                                        }
+                                    }},
+                                    {value:unfinish, name:'未完成',itemStyle:{
+                                        normal:{
+                                            label:{
+                                                show: function(){
+                                                    if(unfinish == 0){
+                                                        return false;
+                                                    }else{
+                                                        return true;
+                                                    }
+                                                }(),
+                                                position: 'outside',
+                                                formatter: '{d}%',
+                                                textStyle:{
+                                                    color:'#888888',
+                                                    fontSize:'15'
+                                                }
+                                            },
+                                            labelLine :{
+                                                show:function(){
+                                                    if(unfinish == 0){
+                                                        return false;
+                                                    }else{
+                                                        return true;
+                                                    }
+                                                }(),
+                                                length:2,
+                                                smooth:0
+                                            }
+                                        }
+                                    }},
+                                    {value:delay_unfinish, name:'延期未完成',itemStyle:{
+                                        normal:{
+                                            label:{
+                                                show: function(){
+                                                    if(delay_unfinish == 0){
+                                                        return false;
+                                                    }else{
+                                                        return true;
+                                                    }
+                                                }(),
+                                                position: 'outside',
+                                                formatter: '{d}%',
+                                                textStyle:{
+                                                    color:'#888888',
+                                                    fontSize:'15'
+                                                }
+                                            },
+                                            labelLine :{
+                                                show:function(){
+                                                    if(delay_unfinish == 0){
+                                                        return false;
+                                                    }else{
+                                                        return true;
+                                                    }
+                                                }(),
+                                                length:2,
+                                                smooth:0
+                                            }
+                                        }
+                                    }}
+                                ]
+                            }
+                        ],
+                        color: ['#00B050','#3C7BC8','#FFC000','#C00000']
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    productChart.setOption(option);
+                },
+                error: function (error) {
+                    closeLoading();
+                    console.log("错误"+JSON.stringify(error));
+                }
+            });
+        }
+    }
+    //获取质量状况数据
+    function getQulityData() {
+        var qulityChart = echarts.init(document.getElementById('qulityDiv'));
+        if(my_macno=="mac000"){
+            var ok_length=0.866;
+            var disok_length=0.134;
+            var total_length=968;
+            option = {
+                title: {
+                    text: '合格总长度',
+                    subtext: total_length+'km',
+                    x: 'center',
+                    y: 'center',
+                    textStyle: {
+                        fontWeight: 'normal',
+                        fontSize: 16
+                    },
+                    subtextStyle:{
+                        color:'#019BF8',
+                        fontWeight:'bold',
+                        fontSize: 20
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{b}: {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    bottom:"40",
+                    data:['合格','不合格'],
+                    selectedMode:false
+                },
+                series: [
+                    {
+                        name:'',
+                        type:'pie',
+                        radius: ['45%', '70%'],
+                        avoidLabelOverlap: false,
+                        data:[
+                            {value:ok_length, name:'合格',itemStyle:{
+                                normal:{
+                                    label:{
+                                        show: function(){
+                                            if(ok_length == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        position: 'outside',
+                                        formatter: '{d}%',
+                                        textStyle:{
+                                            color:'#888888',
+                                            fontSize:'15'
+                                        }
+                                    },
+                                    labelLine :{
+                                        show:function(){
+                                            if(ok_length == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        length:2,
+                                        smooth:0.2
+                                    }
+                                }
+                            }},
+                            {value:disok_length, name:'不合格',itemStyle:{
+                                normal:{
+                                    label:{
+                                        show: function(){
+                                            if(disok_length == 0) return false;
+                                        }(),
+                                        position: 'outside',
+                                        formatter: '{d}%',
+                                        textStyle:{
+                                            color:'#888888',
+                                            fontSize:'15'
+                                        }
+                                    },
+                                    labelLine :{
+                                        show:function(){
+                                            if(disok_length == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }(),
+                                        length:2,//设置指示线长度
+                                        smooth:0.2//设置指示线平滑度
+                                    }
+                                }
+                            }}
+                        ]
+                    }
+                ],
+                color: ['#3C7BC8','#C00000']
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            qulityChart.setOption(option);
+            getDaiJianList();
+            return;
+        }
+        xgxx.ajax('BepaintExecute/GetQualityStatus?callback=callback',{
+            data:{
+                ProcessCode:"sys002",
+                Macno:my_macno
+            },
+            success: function (result, status) {
+                closeLoading();
+                var jsonData = eval(result);
+                console.log(JSON.stringify(jsonData));
+//                android.print("质量数据=====================:"+JSON.stringify(jsonData));
+                var ok_length=jsonData[0].合格;
+                var disok_length=jsonData[0].不合格;
+                var total_length=jsonData[0].合格总长度
+                option = {
+                    title: {
+                        text: '合格总长度',
+                        subtext: total_length+'km',
+                        x: 'center',
+                        y: 'center',
+                        textStyle: {
+                            fontWeight: 'normal',
+                            fontSize: 16
+                        },
+                        subtextStyle:{
+                            color:'#019BF8',
+                            fontWeight:'bold',
+                            fontSize: 20
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}: {c} ({d}%)"
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        bottom:"40",
+                        data:['合格','不合格'],
+                        selectedMode:false
+                    },
+                    series: [
+                        {
+                            name:'',
+                            type:'pie',
+                            radius: ['45%', '70%'],
+                            avoidLabelOverlap: false,
+                            data:[
+                                {value:ok_length, name:'合格',itemStyle:{
+                                    normal:{
+                                        label:{
+                                            show: function(){
+                                                if(ok_length == 0){
+                                                    return false;
+                                                }else{
+                                                    return true;
+                                                }
+                                            }(),
+                                            position: 'outside',
+                                            formatter: '{d}%',
+                                            textStyle:{
+                                                color:'#888888',
+                                                fontSize:'15'
+                                            }
+                                        },
+                                        labelLine :{
+                                            show:function(){
+                                                if(ok_length == 0){
+                                                    return false;
+                                                }else{
+                                                    return true;
+                                                }
+                                            }(),
+                                            length:2,
+                                            smooth:0.2
+                                        }
+                                    }
+                                }},
+                                {value:disok_length, name:'不合格',itemStyle:{
+                                    normal:{
+                                        label:{
+                                            show: function(){
+                                                if(disok_length == 0) return false;
+                                            }(),
+                                            position: 'outside',
+                                            formatter: '{d}%',
+                                            textStyle:{
+                                                color:'#888888',
+                                                fontSize:'15'
+                                            }
+                                        },
+                                        labelLine :{
+                                            show:function(){
+                                                if(disok_length == 0){
+                                                    return false;
+                                                }else{
+                                                    return true;
+                                                }
+                                            }(),
+                                            length:2,//设置指示线长度
+                                            smooth:0.2//设置指示线平滑度
+                                        }
+                                    }
+                                }}
+                            ]
+                        }
+                    ],
+                    color: ['#3C7BC8','#C00000']
+                };
+                // 使用刚指定的配置项和数据显示图表。
+                qulityChart.setOption(option);
+                getDaiJianList();
+            },
+            error: function (error) {
+                closeLoading();
+                console.log("错误"+JSON.stringify(error));
+            }
+        });
+    }
+    //饼状图点击事件
+    function openShowActivity(flag) {
+        android.openShowActivity(flag,my_macno);
+    }
+
+    /**
+     * 待检
+     */
+    function getDaiJianList() {
+        if(my_macno=='mac000'){
+            var jsonData = eval('[{"着色纤编码":"C17091351","着色纤种类":"B1.3","颜色":"绿","长度":50.000000,"作业人员":"赖凤","作业时间":"2017-05-18T16:46:30.12","状态":"待检测"},{"着色纤编码":"C17093657","着色纤种类":"B1.3","颜色":"绿","长度":1.000000,"作业人员":"李小平","作业时间":"2017-05-21T15:51:50.523","状态":"待检测"},{"着色纤编码":"C17095143","着色纤种类":"B1.3","颜色":"粉红","长度":3800.000000,"作业人员":"薛玉娇","作业时间":"2017-05-23T10:18:22.433","状态":"待检测"},{"着色纤编码":"C17096989","着色纤种类":"B1.3","颜色":"绿","长度":10.000000,"作业人员":"赖红","作业时间":"2017-05-25T15:06:32.913","状态":"待检测"},{"着色纤编码":"C17097171","着色纤种类":"B1.3","颜色":"本色","长度":1.000000,"作业人员":"赖红","作业时间":"2017-05-25T19:21:42.34","状态":"待检测"},{"着色纤编码":"C17097890","着色纤种类":"B1.3","颜色":"绿","长度":40.000000,"作业人员":"张玲玲","作业时间":"2017-05-26T15:46:35.79","状态":"待检测"},{"着色纤编码":"C17098061","着色纤种类":"B1.3","颜色":"绿","长度":600.000000,"作业人员":"张玲玲","作业时间":"2017-05-26T19:37:06.733","状态":"待检测"},{"着色纤编码":"C17098069","着色纤种类":"B1.3","颜色":"绿","长度":200.000000,"作业人员":"张玲玲","作业时间":"2017-05-26T19:42:56.87","状态":"待检测"},{"着色纤编码":"C17099002","着色纤种类":"B1.3","颜色":"绿","长度":1.000000,"作业人员":"童顺先","作业时间":"2017-05-28T00:06:05.257","状态":"待检测"},{"着色纤编码":"C17100076","着色纤种类":"B1.3","颜色":"绿","长度":400.000000,"作业人员":"李小平","作业时间":"2017-05-29T04:37:03.76","状态":"待检测"},{"着色纤编码":"C17100606","着色纤种类":"B1.3","颜色":"绿","长度":170.000000,"作业人员":"廖世军","作业时间":"2017-05-29T20:10:00.96","状态":"待检测"},{"着色纤编码":"C17101955","着色纤种类":"B1.3","颜色":"绿","长度":180.000000,"作业人员":"廖世军","作业时间":"2017-05-31T06:21:32.103","状态":"待检测"},{"着色纤编码":"C17102140","着色纤种类":"B1.3","颜色":"绿","长度":1.000000,"作业人员":"童顺先","作业时间":"2017-05-31T12:41:12.247","状态":"待检测"},{"着色纤编码":"C17102606","着色纤种类":"B1.3","颜色":"绿","长度":1300.000000,"作业人员":"陈会","作业时间":"2017-06-01T19:01:14.427","状态":"待检测"},{"着色纤编码":"C17102854","着色纤种类":"B1.3","颜色":"青绿","长度":320.000000,"作业人员":"陈会","作业时间":"2017-06-01T16:35:49.42","状态":"待检测"},{"着色纤编码":"C17105534","着色纤种类":"B1.3","颜色":"绿","长度":3950.000000,"作业人员":"赖红","作业时间":"2017-06-05T10:35:30.807","状态":"待检测"},{"着色纤编码":"C17105574","着色纤种类":"B1.3","颜色":"绿","长度":1500.000000,"作业人员":"赖红","作业时间":"2017-06-05T10:37:30.243","状态":"待检测"},{"着色纤编码":"C17105575","着色纤种类":"B1.3","颜色":"绿","长度":11450.000000,"作业人员":"赖红","作业时间":"2017-06-05T10:38:49.333","状态":"待检测"}]');
+            for(var i=0; i<jsonData.length; i++){
+                var tempStr=jsonData[i].作业时间.replace('T', ' ');
+                jsonData[i].作业时间=tempStr.substring(0,16);
+            }
+            document.getElementById('formBody_daijian').innerHTML = doT.template(template_daijian)(jsonData);
+            return;
+        }
+        xgxx.ajax('BepaintExecute/WaitCheck?callback=callback',{
+            data:{
+                Macno:my_macno
+            },
+            success: function (result, status) {
+                android.endLoading();
+                var jsonData = eval(result);
+//                android.print("待检数据=====================:"+JSON.stringify(jsonData));
+                for(var i=0; i<jsonData.length; i++){
+                    var tempStr=jsonData[i].作业时间.replace('T', ' ');
+                    jsonData[i].作业时间=tempStr.substring(0,16);
+                }
+                document.getElementById('formBody_daijian').innerHTML = doT.template(template_daijian)(jsonData);
+
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
+
+
+
+
+
+

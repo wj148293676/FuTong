@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>质量状况(当班次)</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/zhuose.css">
+    <link rel="stylesheet" href="css/loading.css">
+</head>
+<body>
+<!--<div id="titleDiv">-->
+    <!--<h3 class="center-block text-center">质量状况(当班次)</h3>-->
+<!--</div>-->
+<!--柱状图-->
+<div id="ColumnDiv" class="center-block"></div>
+<!--表格 '断纤','色谱不良','曲线不良','外观不良','排线不良','其他'-->
+<div class="panel-body" style="padding: 10px;">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">项目</th>
+                </tr>
+            </thead>
+            <tbody id="formBody_qulity">
+                <tr class="task"><th class="index-th" scope="row">长度</th></tr>
+                <tr class="task"><th class="index-th" scope="row">累计占比</th></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="js/doT.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/echarts.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript">
+
+    var myMacno;
+
+    $(function () {
+        android.windowReady();
+    });
+
+    function setMacno(macno,server_Domain){
+        xgxx.server_Domain=server_Domain;
+        myMacno=macno;
+        getData(myMacno);
+    }
+
+    function getData(Macno) {
+        $('#ColumnDiv').css("width",$('#ColumnDiv').parent().width()*0.9);
+        $('#ColumnDiv').css("height",$('#ColumnDiv').width()*0.45);
+        var ColumnDiv = echarts.init(document.getElementById('ColumnDiv'));
+        showLoading();
+        android.startLoading();
+        if(Macno=='mac000'){
+            setTimeout(function () {
+                android.endLoading();
+            },1000);
+            var jsonData = [{"项目":"占比","断纤":50,"纤长过短":30,"台阶":25,"色谱不良":15,"其他":10},{"项目":"长度","断纤":0.3846,"纤长过短":0.6154,"台阶":0.8077,"色谱不良":0.9231,"其他":1}];
+            //获取所有列名数组
+            var count=0;
+            var columnData=[];
+            for (var key in jsonData[0]) {
+                columnData[count]=key;
+                count++;
+            }
+            columnData.splice(0,1);//删除第一列,
+
+            //获取空数组作为第二个x轴数据
+            var XData=[];
+            for(i=0; i<columnData.length; i++){
+                XData[i]="";
+            }
+
+            //获取占比数组
+            var percentData=[];//正常完成数据
+            var count=0;
+            for (var key in jsonData[0]) {
+                percentData[count]=parseFloat(jsonData[1][key]);
+                count++;
+            }
+            percentData.splice(0,1);
+            console.log(percentData);
+
+            var percentData2=[];
+            for(var i=0; i<percentData.length; i++){
+                percentData2[i]=percentData[i]*100;
+            }
+
+            //获取占比数组
+            var lengthData=[];//正常完成数据
+            var count=0;
+            for (var key in jsonData[0]) {
+                lengthData[count]=jsonData[0][key];
+                count++;
+            }
+            lengthData.splice(0,1);
+            console.log(lengthData);
+
+            android.print('lengthData'+lengthData.toString());
+            android.print('percentData'+percentData.toString());
+
+            if(lengthData.length<1){
+                android.showToast("无数据");
+            }
+
+//                var percentData_table=[];
+//                for(var i=0; i<percentData.length; i++){
+//                    percentData_table[i]=percentData[i]*100+'%';
+//                }
+
+            android.print('percentData'+percentData.toString());
+            var maxValue=arrayMax(lengthData);//取到数组中最大值
+            option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#283b56'
+                        }
+                    }
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        boundaryGap: true,
+                        data: columnData,
+                        axisLabel:{
+                            interval:0,
+                            rotate:-18
+                        }
+                    },
+                    {
+                        type: 'category',
+                        boundaryGap: true,
+                        data: XData,
+                        axisLabel:{
+                            interval:0,
+                            rotate:-18
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        scale: true,
+                        name: '单位：km',
+                        max: maxValue,
+                        min: 0,
+                        boundaryGap: [0.2, 0.2]
+                    },
+                    {
+                        type: 'value',
+                        scale: true,
+                        name: '百分比%',
+                        max: 100,
+                        min: 0,
+                        boundaryGap: [0.2, 0.2]
+                    }
+                ],
+                series: [
+                    {
+                        name:'不合格项',
+                        type:'bar',
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,//数据对应到第一个y轴
+                        label: {
+                            normal: {
+                                show: function(){
+                                    for(var i=0; i<lengthData.length; i++){
+                                        if(lengthData[i] == 0){
+                                            return false;
+                                        }else{
+                                            return true;
+                                        }
+                                    }
+                                }(),
+                                position: 'inside'
+                            }
+                        },
+                        data: lengthData
+                    },
+                    {
+                        name:'最新成交价',
+                        type:'line',
+                        yAxisIndex: 1,//数据对应到第二个y轴
+                        data: percentData2
+                    }
+                ]
+            };
+            ColumnDiv.setOption(option);
+
+            //展示表格数据
+            for(var i=0; i<columnData.length; i++){
+                var tableHtml = $("table thead tr").html();
+                var addColumn = '<th>'+columnData[i]+'</th>';
+                tableHtml=tableHtml+addColumn;
+                $("table thead tr").html(tableHtml);
+            }
+            for(var j=0; j<2; j++){
+                var th_html;
+                //生成表格
+                for(var i=0; i<columnData.length; i++){
+                    th_html= $('#formBody_qulity tr').eq(j).html();
+                    var addColumn = '<td></td>';
+                    th_html=th_html+addColumn;
+                    $('#formBody_qulity tr').eq(j).html(th_html);
+                }
+                //填充数据
+                switch (j){
+                    case 0:
+                        for(var k=0; k<columnData.length; k++){
+                            $('#formBody_qulity tr').eq(j).find('td').eq(k).html(lengthData[k]);
+                        }
+                        break;
+                    case 1:
+                        for(var k=0; k<columnData.length; k++){
+                            $('#formBody_qulity tr').eq(j).find('td').eq(k).html(((percentData[k])*100).toFixed(2)+'%');
+                        }
+                        break;
+                }
+            }
+            return;
+        }
+        xgxx.ajax('BepaintExecute/GetQualityStatus2?callback=callback',{
+            data:{
+                ProcessCode:'sys001',
+                Macno:Macno
+            },
+            success: function (result, status) {
+                android.endLoading();
+                closeLoading();
+                if(result == "处理失败"){
+                    android.showToast("无数据");
+                    return;
+                }
+                var jsonData = eval(result);
+//                var jsonData = [{"项目":"占比","断纤":20,"色谱不良":60,"其他":100},{"项目":"长度","断纤":22,"色谱不良":19,"其他":null}];
+                console.log(JSON.stringify(jsonData));
+                //把null替换成0
+                for(var j=0; j<jsonData.length; j++){
+                    var obj = jsonData[j];
+                    for(var i in obj) {
+                        if(Object.prototype.hasOwnProperty.call(obj,i)) { //过滤
+                            if(obj[i]==null){
+                                obj[i]=0;
+                            }
+                        }
+                    }
+                }
+                //获取所有列名数组
+                var count=0;
+                var columnData=[];
+                for (var key in jsonData[0]) {
+                    columnData[count]=key;
+                    count++;
+                }
+                columnData.splice(0,1);//删除第一列,
+                console.log(columnData);
+
+                //获取空数组作为第二个x轴数据
+                var XData=[];
+                for(i=0; i<columnData.length; i++){
+                    XData[i]="";
+                }
+
+                //获取占比数组
+                var percentData=[];//正常完成数据
+                var count=0;
+                for (var key in jsonData[0]) {
+                    percentData[count]=parseFloat(jsonData[1][key]);
+                    count++;
+                }
+                percentData.splice(0,1);
+                console.log(percentData);
+
+                var percentData2=[];
+                for(var i=0; i<percentData.length; i++){
+                    percentData2[i]=percentData[i]*100;
+                }
+
+                //获取占比数组
+                var lengthData=[];//正常完成数据
+                var count=0;
+                for (var key in jsonData[0]) {
+                    lengthData[count]=jsonData[0][key];
+                    count++;
+                }
+                lengthData.splice(0,1);
+                console.log(lengthData);
+
+                android.print('lengthData'+lengthData.toString());
+                android.print('percentData'+percentData.toString());
+
+                if(lengthData.length<1){
+                    android.showToast("无数据");
+                }
+
+//                var percentData_table=[];
+//                for(var i=0; i<percentData.length; i++){
+//                    percentData_table[i]=percentData[i]*100+'%';
+//                }
+
+                android.print('percentData'+percentData.toString());
+                var maxValue=arrayMax(lengthData);//取到数组中最大值
+
+                option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        }
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            data: columnData,
+                            axisLabel:{
+                                interval:0,
+                                rotate:-18
+                            }
+                        },
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            data: XData,
+                            axisLabel:{
+                                interval:0,
+                                rotate:-18
+                            }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            scale: true,
+                            name: '单位：km',
+                            max: maxValue,
+                            min: 0,
+                            boundaryGap: [0.2, 0.2]
+                        },
+                        {
+                            type: 'value',
+                            scale: true,
+                            name: '百分比%',
+                            max: 100,
+                            min: 0,
+                            boundaryGap: [0.2, 0.2]
+                        }
+                    ],
+                    series: [
+                        {
+                            name:'不合格项',
+                            type:'bar',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,//数据对应到第一个y轴
+                            label: {
+                                normal: {
+                                    show: function(){
+                                        for(var i=0; i<lengthData.length; i++){
+                                            if(lengthData[i] == 0){
+                                                return false;
+                                            }else{
+                                                return true;
+                                            }
+                                        }
+                                    }(),
+                                    position: 'inside'
+                                }
+                            },
+                            data: lengthData
+                        },
+                        {
+                            name:'最新成交价',
+                            type:'line',
+                            yAxisIndex: 1,//数据对应到第二个y轴
+                            data: percentData2
+                        }
+                    ]
+                };
+                ColumnDiv.setOption(option);
+
+                //展示表格数据
+                for(var i=0; i<columnData.length; i++){
+                    var tableHtml = $("table thead tr").html();
+                    var addColumn = '<th>'+columnData[i]+'</th>';
+                    tableHtml=tableHtml+addColumn;
+                    $("table thead tr").html(tableHtml);
+                }
+                for(var j=0; j<2; j++){
+                    var th_html;
+                    //生成表格
+                    for(var i=0; i<columnData.length; i++){
+                        th_html= $('#formBody_qulity tr').eq(j).html();
+                        var addColumn = '<td></td>';
+                        th_html=th_html+addColumn;
+                        $('#formBody_qulity tr').eq(j).html(th_html);
+                    }
+                    //填充数据
+                    switch (j){
+                        case 0:
+                            for(var k=0; k<columnData.length; k++){
+                                $('#formBody_qulity tr').eq(j).find('td').eq(k).html(lengthData[k]);
+                            }
+                            break;
+                        case 1:
+                            for(var k=0; k<columnData.length; k++){
+                                $('#formBody_qulity tr').eq(j).find('td').eq(k).html(((percentData[k])*100).toFixed(2)+'%');
+                            }
+                            break;
+                    }
+                }
+            },
+            error: function (error) {
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+</script>
+</body>
+</html>

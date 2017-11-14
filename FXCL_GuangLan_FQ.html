@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>束管半成品仓储管理</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/storage.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="stylesheet" href="css/mui.min.css">
+    <link rel="stylesheet" href="css/mui.picker.min.css">
+    <link rel="stylesheet" href="css/mui.poppicker.css">
+    <style type="text/css">
+        .btn,.title{
+            font-family: "微软雅黑";
+            font-size: 16px;
+        }
+        .title{
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 35px;
+        }
+        .devideLine{
+            width: 98%;
+            height: 2px;
+            background: #666666;
+            margin-top: 15px;
+        }
+        .textarea{
+            width: 100%;
+            min-height: 60px;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 15px;
+            outline: 0;
+            border: 1px solid #999999;
+            font-size: 16px;
+            line-height: 24px;
+            word-wrap: break-word;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .box-container{
+            margin-top: 30px;
+            padding-bottom: 30px;
+            border: 1px solid #999999;
+            position: relative;
+        }
+        .title-p{
+            position: absolute;
+            font-family: "微软雅黑";
+            font-size: 18px;
+            font-weight: bold;
+            top: -15px;
+            left: 30px;
+            z-index: 100;
+            padding-left: 10px;
+            padding-right: 10px;
+            background: #ffffff;
+        }
+        .input-xgit{
+            border: 1px solid #cccccc;
+            outline: none;
+            height: 35px;
+            line-height: 30px;
+            padding: 3px 5px;
+        }
+        .inner-title{
+            font-family: "微软雅黑";
+            font-size: 16px;
+            line-height: 35px;
+        }
+        .tab-p{
+            font-size: 12px;
+        }
+        .btn,.title{
+            font-family: "微软雅黑";
+            font-size: 16px;
+        }
+        .title{
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 35px;
+        }
+        .devideLine{
+            width: 98%;
+            height: 2px;
+            background: #666666;
+            margin-top: 15px;
+        }
+        .textarea{
+            width: 100%;
+            min-height: 60px;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 15px;
+            outline: 0;
+            border: 1px solid #999999;
+            font-size: 16px;
+            line-height: 24px;
+            word-wrap: break-word;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .box-container{
+            margin-top: 30px;
+            padding-bottom: 30px;
+            border: 1px solid #999999;
+            position: relative;
+        }
+        .title-p{
+            position: absolute;
+            font-family: "微软雅黑";
+            font-size: 18px;
+            font-weight: bold;
+            top: -15px;
+            left: 30px;
+            z-index: 100;
+            padding-left: 10px;
+            padding-right: 10px;
+            background: #ffffff;
+        }
+        .input-xgit{
+            border: 1px solid #cccccc;
+            outline: none;
+            height: 35px;
+            line-height: 30px;
+            padding: 3px 5px;
+        }
+        .inner-title{
+            font-family: "微软雅黑";
+            font-size: 16px;
+            line-height: 35px;
+        }
+        .workBtnDiv button{
+            margin-top: 10px;
+        }
+        .remark_p{
+            font-family: "微软雅黑";
+            font-size: 16px;
+            margin-top: 40px;
+        }
+        .input-group span{
+            font-family: "微软雅黑";
+        }
+        .modal-header{
+            background: #3A89ED;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .modal-title{
+            font-family: 微软雅黑;color: white;
+        }
+        .textinfo{
+            font-size: 20px;font-family: 微软雅黑;line-height: 150px;
+        }
+        .nav-pills li{
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            background: #cccccc;
+        }
+        .nav-pills li a{
+            font-size: 16px;font-family: 微软雅黑;color: #ffffff;
+        }
+        .selectDiv{
+            border: 1px solid #cccccc;height: 40px;border-radius: 5px;
+        }
+        .selectDiv p{
+            height:39px;line-height: 39px;background: #eeeeee;font-size: 16px;font-family: 微软雅黑;color: #666666;border-bottom: 1px solid #cccccc;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap-content" style="overflow: hidden; overflow-y: auto;background: #ffffff">
+    <div class="container" style="margin-top: 30px;padding: 0px;">
+        <div class="row">
+            <div class="col-xs-3 col-md-3">
+                <p class="center-block text-center title">返修处理--分切</p>
+            </div>
+            <div class="col-xs-1 col-md-1"></div>
+            <div class="col-xs-2 col-md-2">
+                <button id="addSplite" type="button" class="btn btn-primary center-block" style="width: 90%;">新增分切</button>
+            </div>
+            <div class="col-xs-2 col-md-2">
+                <button id="saveBtn" type="button" class="btn btn-primary center-block" style="width: 90%;">保存</button>
+            </div>
+            <div class="col-xs-2 col-md-2">
+                <button id="finishBtn" type="button"  class="btn btn-primary center-block" style="width: 90%;">分切完成</button>
+            </div>
+            <div class="col-xs-2 col-md-2">
+                <button id="clearBtn" type="button" class="btn btn-primary center-block" style="width: 90%;">清除分切信息</button>
+            </div>
+        </div>
+    </div>
+    <div class="devideLine center-block"></div>
+    <div class="container" style="padding: 0px;">
+        <div id="infoContent" class="textarea" contenteditable="false"><br /></div>
+    </div>
+    <div class="container box-container" style="margin-bottom: 15px;">
+        <p class="text-center title-p">分切内容录入</p>
+        <div class="row" style="margin-top: 50px;">
+            <div class="col-xs-6 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon" >分切机台</span>
+                    <input id="jitai_code" type="text" class="form-control" readonly="readonly" style="background: #ffffff">
+                    <p id="GUID" style="display: none;"></p>
+                    <p id="FGCode" style="display: none;"></p>
+                    <p id="MacCode" style="display: none;"></p>
+                </div>
+            </div>
+            <div class="col-xs-6 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon" >作业人员</span>
+                    <input id="operatorname" type="text" class="form-control" readonly="readonly">
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 50px;">
+            <div class="col-xs-6 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">作业时间</span>
+                    <input id="operatortime" type="text" class="form-control" readonly="readonly">
+                </div>
+            </div>
+            <div class="col-xs-6 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">状态</span>
+                    <input id="work_state" type="text" class="form-control" readonly="readonly">
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 30px;padding-left: 0px;padding-right: 30px;">
+            <!-- 导航区 -->
+            <ul id="navDiv" class="nav nav-pills" role="tablist" style="border-bottom: 1px solid #999999;padding-bottom: 5px;">
+                <li role="presentation" class="active"><a href="#splite_1" role="tab" data-toggle="tab">分切第一段</a></li>
+                <li role="presentation"><a href="#splite_2" role="tab" data-toggle="tab">分切第二段</a></li>
+                <li role="presentation"><a href="#splite_3" role="tab" data-toggle="tab">分切第三段</a></li>
+                <li role="presentation"><a href="#splite_4" role="tab" data-toggle="tab">分切第四段</a></li>
+                <li role="presentation"><a href="#splite_5" role="tab" data-toggle="tab">分切第五段</a></li>
+                <li role="presentation"><a href="#splite_6" role="tab" data-toggle="tab">分切第六段</a></li>
+                <li role="presentation"><a href="#splite_7" role="tab" data-toggle="tab">分切第七段</a></li>
+                <li role="presentation"><a href="#lastone" role="tab" data-toggle="tab">剩余光缆</a></li>
+            </ul>
+            <!-- 面板区 -->
+            <div id="spliteDiv" class="tab-content" style="overflow-y:auto;overflow-x: hidden;">
+                <div role="tabpanel" class="tab-pane active" id="splite_1">
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆编号</span>
+                                <input type="text" class="form-control gl_code" aria-describedby="gl_pan" readonly="readonly">
+                                <p class="id" style="display: none;"></p>
+                                <p class="CutGuid" style="display: none;"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字编号</span>
+                                <input type="text" class="form-control print_code" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">分切长度</span>
+                                <input type="text" class="form-control fq_length" aria-describedby="storage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">线速(m/min)</span>
+                                <input type="text" class="form-control line_speed" aria-describedby="gl_pan">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆盘具</span>
+                                <input type="text" class="form-control gl_pan" aria-describedby="storage" readonly="readonly" style="background: #ffffff">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">目标仓库</span>
+                                <input type="text" class="form-control storage" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字内容</span>
+                                <input type="text" class="form-control print_text" aria-describedby="print_text" style="background: #ffffff;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-3 col-md-3">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">有效性</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select class="effectSelect" style="width: 100%;height: 36px;background: #ffffff;border: none;outline: none">
+                                            <option value="1">正常</option>
+                                            <option value="2">废品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 15px;margin-top: 30px;">
+                        <p>备注</p>
+                        <div class="textarea" contenteditable="true"><br /></div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <button data-index="1" type="button" class="btn btn-primary center-block" style="width: 30%;border-radius: 5px;">移除本段分切</button>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="splite_2">
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆编号</span>
+                                <input type="text" class="form-control gl_code" aria-describedby="gl_pan" readonly="readonly">
+                                <p class="id" style="display: none;"></p>
+                                <p class="CutGuid" style="display: none;"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字编号</span>
+                                <input type="text" class="form-control print_code" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">分切长度</span>
+                                <input type="text" class="form-control fq_length" aria-describedby="storage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">线速(m/min)</span>
+                                <input type="text" class="form-control line_speed" aria-describedby="gl_pan">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆盘具</span>
+                                <input type="text" class="form-control gl_pan" aria-describedby="storage" readonly="readonly" style="background: #ffffff">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">目标仓库</span>
+                                <input type="text" class="form-control storage" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字内容</span>
+                                <input type="text" class="form-control print_text" aria-describedby="print_text" style="background: #ffffff;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">有效性</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select class="effectSelect" style="width: 100%;height: 36px;background: #ffffff;border: none;outline: none">
+                                            <option value="1">正常</option>
+                                            <option value="2">废品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <p>备注</p>
+                        <div class="textarea" contenteditable="true"><br /></div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <button data-index="2" type="button" class="btn btn-primary center-block" style="width: 30%;border-radius: 5px;">移除本段分切</button>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="splite_3">
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆编号</span>
+                                <input type="text" class="form-control gl_code" aria-describedby="gl_pan" readonly="readonly">
+                                <p class="id" style="display: none;"></p>
+                                <p class="CutGuid" style="display: none;"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字编号</span>
+                                <input type="text" class="form-control print_code" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">分切长度</span>
+                                <input type="text" class="form-control fq_length" aria-describedby="storage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">线速(m/min)</span>
+                                <input type="text" class="form-control line_speed" aria-describedby="gl_pan">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆盘具</span>
+                                <input type="text" class="form-control gl_pan" aria-describedby="storage" readonly="readonly" style="background: #ffffff">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">目标仓库</span>
+                                <input type="text" class="form-control storage" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字内容</span>
+                                <input type="text" class="form-control print_text" aria-describedby="print_text" style="background: #ffffff;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">有效性</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select class="effectSelect" style="width: 100%;height: 36px;background: #ffffff;border: none;outline: none">
+                                            <option value="1">正常</option>
+                                            <option value="2">废品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <p>备注</p>
+                        <div class="textarea" contenteditable="true"><br /></div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <button data-index="3" type="button" class="btn btn-primary center-block" style="width: 30%;border-radius: 5px;">移除本段分切</button>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="splite_4">
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆编号</span>
+                                <input type="text" class="form-control gl_code" aria-describedby="gl_pan" readonly="readonly">
+                                <p class="id" style="display: none;"></p>
+                                <p class="CutGuid" style="display: none;"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字编号</span>
+                                <input type="text" class="form-control print_code" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">分切长度</span>
+                                <input type="text" class="form-control fq_length" aria-describedby="storage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">线速(m/min)</span>
+                                <input type="text" class="form-control line_speed" aria-describedby="gl_pan">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆盘具</span>
+                                <input type="text" class="form-control gl_pan" aria-describedby="storage" readonly="readonly" style="background: #ffffff;">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">目标仓库</span>
+                                <input type="text" class="form-control storage" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字内容</span>
+                                <input type="text" class="form-control print_text" aria-describedby="print_text" style="background: #ffffff;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">有效性</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select class="effectSelect" style="width: 100%;height: 36px;background: #ffffff;border: none;outline: none">
+                                            <option value="1">正常</option>
+                                            <option value="2">废品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <p>备注</p>
+                        <div class="textarea" contenteditable="true"><br /></div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <button data-index="4" type="button" class="btn btn-primary center-block" style="width: 30%;border-radius: 5px;">移除本段分切</button>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="splite_5">
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆编号</span>
+                                <input type="text" class="form-control gl_code" aria-describedby="gl_pan" readonly="readonly">
+                                <p class="id" style="display: none;"></p>
+                                <p class="CutGuid" style="display: none;"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字编号</span>
+                                <input type="text" class="form-control print_code" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">分切长度</span>
+                                <input type="text" class="form-control fq_length" aria-describedby="storage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">线速(m/min)</span>
+                                <input type="text" class="form-control line_speed" aria-describedby="gl_pan">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆盘具</span>
+                                <input type="text" class="form-control gl_pan" aria-describedby="storage" readonly="readonly" style="background: #ffffff;">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">目标仓库</span>
+                                <input type="text" class="form-control storage" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字内容</span>
+                                <input type="text" class="form-control print_text" aria-describedby="print_text" style="background: #ffffff;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">有效性</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select class="effectSelect" style="width: 100%;height: 36px;background: #ffffff;border: none;outline: none">
+                                            <option value="1">正常</option>
+                                            <option value="2">废品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <p>备注</p>
+                        <div class="textarea" contenteditable="true"><br /></div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <button data-index="5" type="button" class="btn btn-primary center-block" style="width: 30%;border-radius: 5px;">移除本段分切</button>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="splite_6">
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆编号</span>
+                                <input type="text" class="form-control gl_code" aria-describedby="gl_pan" readonly="readonly">
+                                <p class="id" style="display: none;"></p>
+                                <p class="CutGuid" style="display: none;"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字编号</span>
+                                <input type="text" class="form-control print_code" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">分切长度</span>
+                                <input type="text" class="form-control fq_length" aria-describedby="storage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">线速(m/min)</span>
+                                <input type="text" class="form-control line_speed" aria-describedby="gl_pan">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆盘具</span>
+                                <input type="text" class="form-control gl_pan" aria-describedby="storage" readonly="readonly" style="background: #ffffff;">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">目标仓库</span>
+                                <input type="text" class="form-control storage" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字内容</span>
+                                <input type="text" class="form-control print_text" aria-describedby="print_text" style="background: #ffffff;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">有效性</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select class="effectSelect" style="width: 100%;height: 36px;background: #ffffff;border: none;outline: none">
+                                            <option value="1">正常</option>
+                                            <option value="2">废品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <p>备注</p>
+                        <div class="textarea" contenteditable="true"><br /></div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <button data-index="6" type="button" class="btn btn-primary center-block" style="width: 30%;border-radius: 5px;">移除本段分切</button>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="splite_7">
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆编号</span>
+                                <input type="text" class="form-control gl_code" aria-describedby="gl_pan" readonly="readonly">
+                                <p class="id" style="display: none;"></p>
+                                <p class="CutGuid" style="display: none;"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字编号</span>
+                                <input type="text" class="form-control print_code" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">分切长度</span>
+                                <input type="text" class="form-control fq_length" aria-describedby="storage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">线速(m/min)</span>
+                                <input type="text" class="form-control line_speed" aria-describedby="gl_pan">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆盘具</span>
+                                <input type="text" class="form-control gl_pan" aria-describedby="storage" readonly="readonly" style="background: #ffffff;">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">目标仓库</span>
+                                <input type="text" class="form-control storage" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字内容</span>
+                                <input type="text" class="form-control print_text" aria-describedby="print_text" style="background: #ffffff;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">有效性</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select class="effectSelect" style="width: 100%;height: 36px;background: #ffffff;border: none;outline: none">
+                                            <option value="1">正常</option>
+                                            <option value="2">废品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <p>备注</p>
+                        <div class="textarea" contenteditable="true"><br /></div>
+                    </div>
+                    <div class="row" style="padding: 15px;">
+                        <button data-index="7" type="button" class="btn btn-primary center-block" style="width: 30%;border-radius: 5px;">移除本段分切</button>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="lastone">
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆编号</span>
+                                <input type="text" class="form-control gl_code" aria-describedby="gl_pan" readonly="readonly">
+                                <p class="id" style="display: none;"></p>
+                                <p class="CutGuid" style="display: none;"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字编号</span>
+                                <input type="text" class="form-control print_code" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">分切长度</span>
+                                <input type="text" class="form-control fq_length" aria-describedby="storage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">线速(m/min)</span>
+                                <input type="text" class="form-control line_speed" aria-describedby="gl_pan">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">光缆盘具</span>
+                                <input type="text" class="form-control gl_pan" aria-describedby="storage" readonly="readonly" style="background: #ffffff;">
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">目标仓库</span>
+                                <input type="text" class="form-control storage" aria-describedby="storage" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">有效性</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select class="effectSelect" style="width: 100%;height: 36px;background: #ffffff;border: none;outline: none">
+                                            <option value="1">正常</option>
+                                            <option value="2">废品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xs-4">
+                            <div class="selectDiv">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <p class="text-center">是否换盘</p>
+                                    </div>
+                                    <div class="col-xs-7 col-md-7">
+                                        <select id="isNewPan" style="height: 35px;">
+                                            <option value="2">否</option>
+                                            <option value="1">是</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">印字内容</span>
+                                <input type="text" class="form-control print_text" aria-describedby="print_text" style="background: #ffffff;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding: 15px;margin-top: 10px;">
+                        <p>备注</p>
+                        <div class="textarea" contenteditable="true"><br /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--loading-->
+<div id="loading" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+
+<!--bootstrap模态框-->
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title center-block text-center" id="gridSystemModalLabel">提示</h4>
+            </div>
+            <div class="modal-body"style="height: 150px">
+                <div class="row">
+                    <div class="col-md-2 col-xs-2"></div>
+                    <div class="col-md-8 col-xs-8 center-block text-center textinfo">确定分切完成吗？</div>
+                    <div class="col-md-2 col-xs-2"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="sureFinishBtn" type="button" class="btn btn-primary">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--bootstrap模态框-->
+<div id="effectModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title center-block text-center" id="gridSystemModalLabel2">提示</h4>
+            </div>
+            <div class="modal-body"style="height: 150px">
+                <div class="row">
+                    <div class="col-md-1 col-xs-1"></div>
+                    <div class="col-md-10 col-xs-10 center-block text-center textinfo" style="padding-top: 5%">分切段中有光缆长度到达报废长度，是否将其设置为废品？</div>
+                    <div class="col-md-1 col-xs-1"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="sureFinishBtn2" type="button" class="btn btn-primary">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<script type="text/javascript" src="js/doT.js"></script>
+<script type="text/javascript" src="js/mui.js"></script>
+<script type="text/javascript" src="js/mui.picker.min.js"></script>
+<script type="text/javascript" src="js/mui.poppicker.js"></script>
+<script type='text/javascript' src='js/jquery-2.0.3.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/bootstrap.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="js/ftcommon.js"></script>
+<script type="text/javascript">
+    var template;
+    var my_macno;
+    var myusername;
+    var Timer;
+    var publicNum;
+    var Quality;
+    var GUID;
+    var FGCode;
+    var FGLen;//母盘长度
+    $(function(){
+        android.windowReady();
+        initSwiper();//初始化swiper
+        $('#wrap-content').css('height',$(window).height()+'px');
+        setAddSpliteBtn();//新增分切
+        saveInfo();//保存分切
+        clearInfo();
+        $('#sureFinishBtn').click(function () {
+            sureFinishBtn();
+        });
+
+        $('.spliteLen').keyup(function(){
+            var childLength=0;
+            for(var i=0; i<$("#navDiv li").length-1;i++){
+                if($("#navDiv li").eq(i).is(":visible")){
+                    var cutLength = $("#spliteDiv .tab-pane").eq(i).find('.fq_length').val();
+                    if(cutLength == null || cutLength ==""){
+                        cutLength=0;
+                    }else{
+                        cutLength=parseFloat(cutLength);
+                    }
+                    childLength = childLength+cutLength;
+                }
+            }
+            console.log(childLength);
+            if(FGLen==null || FGLen=="" || FGLen.length==0){
+                $('.fq_length').last().val("");
+            }else{
+                $('.fq_length').last().val(parseFloat(FGLen)-childLength);
+            }
+        });
+
+    });
+
+    //设置用户名
+    function setusername(username,server_Domain,GUID) {
+        xgxx.server_Domain=server_Domain;
+        myusername=username;
+        GUID=GUID;
+        getInfo(GUID);//获取基础信息
+        $('#GUID').html(GUID);
+        $('.CutGuid').html(GUID);
+    }
+    //tab选项卡tab标题点击事件
+    $('#navDiv li').click(function () {
+        $("#spliteDiv").find('.tab-pane').removeClass('show');
+        $('#spliteDiv').find('.tab-pane').addClass('hide');
+        $("#spliteDiv").find('.tab-pane').removeClass('active');
+        $("#spliteDiv").find('.tab-pane').eq($(this).index()).removeClass('hide');
+        $('#spliteDiv').find('.tab-pane').eq($(this).index()).addClass('show');
+        $("#spliteDiv").find('.tab-pane').eq($(this).index()).addClass('active');
+    });
+
+    //分段删除按钮点击事件
+    $("#spliteDiv .tab-pane button").click(function () {
+        var deleteIndex = $(this).data('index');
+        $("#navDiv li").eq(deleteIndex-1).removeClass('active');
+        $("#navDiv li").eq(deleteIndex-1).removeClass('show');
+        $("#navDiv li").eq(deleteIndex-1).addClass('hide');
+        $("#spliteDiv").find('.tab-pane').eq(deleteIndex-1).removeClass('show');
+        $("#spliteDiv").find('.tab-pane').eq(deleteIndex-1).removeClass('active');
+        $("#spliteDiv").find('.tab-pane').eq(deleteIndex-1).addClass('hide');
+
+        $("#navDiv li").eq(deleteIndex-2).addClass('active');
+        $("#spliteDiv").find('.tab-pane').eq(deleteIndex-2).addClass('active');
+        $("#spliteDiv").find('.tab-pane').eq(deleteIndex-2).addClass('show');
+        $("#spliteDiv").find('.tab-pane').eq(deleteIndex-2).find('button').removeAttr("disabled");
+        $("#spliteDiv").find('.tab-pane').eq(deleteIndex-2).find('button').css('background',"#286090");
+
+        var pageStdCode = $('#spliteDiv').find('.tab-pane:last').find('.lanxinCode').eq(0).val();
+        $('#spliteDiv').find('.tab-pane:last').find('.lanxinCode').eq(0).val(pageStdCode.substring(0,pageStdCode.length-1)+numToLetter(deleteIndex));
+
+    });
+    $('#isNewPan').change(function(){
+        if($(this).children('option:selected').val()=='2'){
+            $('#spliteDiv').find('.tab-pane:last').find('.panCode').eq(0).removeAttr("disabled");
+        }else{
+            $('#spliteDiv').find('.tab-pane:last').find('.panCode').eq(0).attr("disabled",true);
+        }
+    });
+
+    //初始化swiper
+    function initSwiper() {
+        $('.workBtnDiv').css('display','none');
+        $('.swiper-container').height($(window).height());
+        var mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: false,
+            onSlideChangeEnd: function(swiper){
+                $('.tab-p').removeClass('active');
+                $('.tab-p').eq(swiper.activeIndex).addClass('active');
+                if(swiper.activeIndex==0){
+                    $('.workBtnDiv').css('display','none');
+                }else{
+                    $('.workBtnDiv').css('display','block');
+                }
+            }
+        });
+        $('.tab-p').click(function () {
+            if($('.tab-p').index(this)==0){
+                $('.workBtnDiv').css('display','none');
+            }else{
+                $('.workBtnDiv').css('display','block');
+            }
+            mySwiper.slideTo($('.tab-p').index(this), 500, false);
+            $('.tab-p').removeClass('active');
+            $('.tab-p').eq(mySwiper.activeIndex).addClass('active');
+
+        });
+    }
+
+    function getInfo(GUID) {
+        android.print(myusername);
+        android.print(GUID);
+        android.startLoading();
+        xgxx.ajax('OSheathRepair/XGIT_GLRepair_GetSourceInfo?callback=callback',{
+            data:{
+                Guid:GUID,
+                Promethod:"2"
+            },
+            success: function (result, status) {
+                var jsonData=eval(result.Content);
+                android.print(JSON.stringify(jsonData));
+                if(result.Msg=="1"){
+                    getPrintContent();//获取印字内容
+                    $('#infoContent').html(jsonData[0].Info);
+                    $('#FGCode').html(jsonData[0].FGCode);
+                    FGLen=jsonData[0].FGLen;
+                    var operatorTime=jsonData[0].OperatorTime;
+                    operatorTime=operatorTime.replace('T', ' ');
+                    operatorTime=operatorTime.substring(0,16);
+                    if(jsonData[0].OperatorName=="" || jsonData[0].OperatorName==undefined){
+                        $('#operatorname').val(myusername);//作业人员
+                    }else{
+                        $('#operatorname').val(jsonData[0].OperatorName);//作业人员
+                    }
+                    if(jsonData[0].OperatorTime=="" || jsonData[0].OperatorTime==undefined){
+                        $('#operatortime').val(Format(new Date(),"yyyy-MM-dd HH:mm"));//作业时间
+                    }else{
+                        $('#operatortime').val(operatorTime);//作业时间
+                    }
+                    $('#work_state').val(jsonData[0].StateView);//状态
+
+                    //展示各段分切信息
+                    if(result.FenQieInfo.length>0 && result.FenQieInfo.length==1){
+                        $('#navDiv li').hide();
+                        $('#navDiv li').last().show();
+                        $('#navDiv li').last().addClass('active');
+                        $('#spliteDiv').find('.tab-pane').hide();
+                        $('#spliteDiv').find('.tab-pane').last().show();
+                        $("#spliteDiv").find('.tab-pane').last().find('.id').eq(0).html(result.FenQieInfo[0].ID);//id
+                        $("#spliteDiv").find('.tab-pane').last().find('.CutGuid').eq(0).html(result.FenQieInfo[0].CutGuid);//guid
+                        $('#spliteDiv').find('.tab-pane').last().find('.gl_code').eq(0).val(result.FenQieInfo[0].FGCode);//缆芯编号
+                        $('#spliteDiv').find('.tab-pane').last().find('.print_code').eq(0).val(result.FenQieInfo[0].CableCode);//印字编号
+                        $('#spliteDiv').find('.tab-pane').last().find('.print_text').eq(0).val(result.FenQieInfo[0].FGMark);//印字内容
+                        $('#spliteDiv').find('.tab-pane').last().find('.fq_length').eq(0).val($('#OrdrLen').val());//分切长度
+                        $('#spliteDiv').find('.tab-pane').last().find('.line_speed').eq(0).val(result.FenQieInfo[0].Speed);//线速
+                        $('#spliteDiv').find('.tab-pane').last().find('.gl_pan').eq(0).val(result.FenQieInfo[0].PanDesc);//盘号
+                        $('#spliteDiv').find('.tab-pane').last().find('.gl_pan').eq(0)[0].setAttribute("data-code",result.FenQieInfo[0].PanGuid);//盘GUID
+                        $('#spliteDiv').find('.tab-pane').last().find('.storage').eq(0).val(result.FenQieInfo[0].TargetStorage);//目标仓库
+                        $('#spliteDiv').find('.tab-pane').last().find('.storage').eq(0).data("StorageCode",result.FenQieInfo[0].TargetStorageName);//目标仓库号
+                        $('#spliteDiv').find('.tab-pane').last().find('.effectSelect').eq(0).val(result.FenQieInfo[0].CutType);//有效性
+                    }else if(result.FenQieInfo.length>1){
+                        $('#navDiv li').hide();
+                        $('#spliteDiv').find('.tab-pane').hide();
+                        for(var i=0;i<result.FenQieInfo.length;i++){
+                            if(i<result.FenQieInfo.length-1){
+                                $('#navDiv li').eq(i).addClass("show");
+                                $("#spliteDiv").find('.tab-pane').eq(i).find('.id').eq(0).html(result.FenQieInfo[i].ID);//id
+                                $("#spliteDiv").find('.tab-pane').eq(i).find('.CutGuid').eq(0).html(result.FenQieInfo[i].CutGuid);//guid
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.gl_code').eq(0).val(result.FenQieInfo[i].FGCode);//缆芯编号
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.print_code').eq(0).val(result.FenQieInfo[i].CableCode);//印字编号
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.print_text').eq(0).val(result.FenQieInfo[i].FGMark);//印字内容
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.fq_length').eq(0).val(result.FenQieInfo[i].CutLen);//分切长度
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.line_speed').eq(0).val(result.FenQieInfo[i].Speed);//线速
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.gl_pan').eq(0).val(result.FenQieInfo[i].PanDesc);//盘号
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.gl_pan').eq(0)[0].setAttribute("data-code",result.FenQieInfo[i].PanGuid);//盘GUID
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.storage').eq(0).val(result.FenQieInfo[i].TargetStorage);//目标仓库
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.storage').eq(0).data("StorageCode",result.FenQieInfo[i].TargetStorageName);//目标仓库号
+                                $('#spliteDiv').find('.tab-pane').eq(i).find('.effectSelect').eq(0).val(result.FenQieInfo[i].CutType);//有效性
+                            }else{
+                                $('#navDiv li').last().addClass("show");
+                                $("#spliteDiv").find('.tab-pane').last().find('.id').eq(0).html(result.FenQieInfo[i].ID);//id
+                                $("#spliteDiv").find('.tab-pane').last().find('.CutGuid').eq(0).html(result.FenQieInfo[i].CutGuid);//guid
+                                $('#spliteDiv').find('.tab-pane').last().find('.gl_code').eq(0).val(result.FenQieInfo[i].FGCode);//缆芯编号
+                                $('#spliteDiv').find('.tab-pane').last().find('.print_code').eq(0).val(result.FenQieInfo[i].CableCode);//印字编号
+                                $('#spliteDiv').find('.tab-pane').last().find('.print_text').eq(0).val(result.FenQieInfo[i].FGMark);//印字内容
+                                $('#spliteDiv').find('.tab-pane').last().find('.fq_length').eq(0).val(result.FenQieInfo[i].CutLen);//分切长度
+                                $('#spliteDiv').find('.tab-pane').last().find('.line_speed').eq(0).val(result.FenQieInfo[i].Speed);//线速
+                                $('#spliteDiv').find('.tab-pane').last().find('.gl_pan').eq(0).val(result.FenQieInfo[i].PanDesc);//盘号
+                                $('#spliteDiv').find('.tab-pane').last().find('.gl_pan').eq(0)[0].setAttribute("data-code",result.FenQieInfo[i].PanGuid);//盘GUID
+                                $('#spliteDiv').find('.tab-pane').last().find('.storage').eq(0).val(result.FenQieInfo[i].TargetStorage);//目标仓库
+                                $('#spliteDiv').find('.tab-pane').last().find('.storage').eq(0).data("StorageCode",result.FenQieInfo[i].TargetStorageName);//目标仓库号
+                                $('#spliteDiv').find('.tab-pane').last().find('.effectSelect').eq(0).val(result.FenQieInfo[i].CutType);//有效性
+                            }
+                            $('#navDiv li').eq(0).addClass("active");
+                            $('#spliteDiv').find('.tab-pane').eq(0).addClass("show");
+                            $('#spliteDiv').find('.tab-pane').eq(0).addClass("active");
+                        }
+                    }else{
+                        $('#navDiv li').hide();
+                        $('#navDiv li').last().show();
+                        $('#navDiv li').last().addClass('active');
+                        $('#spliteDiv').find('.tab-pane').hide();
+                        $('#spliteDiv').find('.tab-pane').last().show();
+                        $("#spliteDiv").find('.tab-pane').last().find('.id').eq(0).html("");//id
+                        $("#spliteDiv").find('.tab-pane').last().find('.CutGuid').eq(0).html("");//guid
+                        $('#spliteDiv').find('.tab-pane').last().find('.gl_code').eq(0).val("");//缆芯编号
+                        $('#spliteDiv').find('.tab-pane').last().find('.print_code').eq(0).val("");//印字编号
+                        $('#spliteDiv').find('.tab-pane').last().find('.print_text').eq(0).val("");//印字内容
+                        $('#spliteDiv').find('.tab-pane').last().find('.fq_length').eq(0).val("");//分切长度
+                        $('#spliteDiv').find('.tab-pane').last().find('.line_speed').eq(0).val("");//线速
+                        $('#spliteDiv').find('.tab-pane').last().find('.gl_pan').eq(0).val("");//盘号
+                        $('#spliteDiv').find('.tab-pane').last().find('.gl_pan').eq(0)[0].setAttribute("data-code","");//盘GUID
+                        $('#spliteDiv').find('.tab-pane').last().find('.storage').eq(0).val("");//目标仓库
+                        $('#spliteDiv').find('.tab-pane').last().find('.effectSelect').eq(0).val("");//有效性
+                        var pageStdCode = result.Content[0].FGCode;
+                        $('#spliteDiv').find('.tab-pane').last().find('.gl_code').eq(0).val(pageStdCode+"-A");
+                    }
+                    //设置tab高亮
+                    setActiveTab();
+                    //给各个tab页生成分切缆芯编号
+                    var pageStdCode = result.Content[0].FGCode;
+                    FGCode=pageStdCode;
+                    $('#spliteDiv').find('.tab-pane').eq(0).find('.gl_code').eq(0).val(pageStdCode+"-A");
+                    $('#spliteDiv').find('.tab-pane').eq(1).find('.gl_code').eq(0).val(pageStdCode+"-B");
+                    $('#spliteDiv').find('.tab-pane').eq(2).find('.gl_code').eq(0).val(pageStdCode+"-C");
+                    $('#spliteDiv').find('.tab-pane').eq(3).find('.gl_code').eq(0).val(pageStdCode+"-D");
+                    $('#spliteDiv').find('.tab-pane').eq(4).find('.gl_code').eq(0).val(pageStdCode+"-E");
+                    $('#spliteDiv').find('.tab-pane').eq(5).find('.gl_code').eq(0).val(pageStdCode+"-F");
+                    $('#spliteDiv').find('.tab-pane').eq(6).find('.gl_code').eq(0).val(pageStdCode+"-G");
+                    //给各个tab页的目标仓库赋值
+                    $('#spliteDiv').find('.tab-pane').eq(0).find('.storage').eq(0).val(result.FenQieInfo[0].TargetStorageName);
+                    $('#spliteDiv').find('.tab-pane').eq(1).find('.storage').eq(0).val(result.FenQieInfo[0].TargetStorageName);
+                    $('#spliteDiv').find('.tab-pane').eq(2).find('.storage').eq(0).val(result.FenQieInfo[0].TargetStorageName);
+                    $('#spliteDiv').find('.tab-pane').eq(3).find('.storage').eq(0).val(result.FenQieInfo[0].TargetStorageName);
+                    $('#spliteDiv').find('.tab-pane').eq(4).find('.storage').eq(0).val(result.FenQieInfo[0].TargetStorageName);
+                    $('#spliteDiv').find('.tab-pane').eq(5).find('.storage').eq(0).val(result.FenQieInfo[0].TargetStorageName);
+                    $('#spliteDiv').find('.tab-pane').eq(6).find('.storage').eq(0).val(result.FenQieInfo[0].TargetStorageName);
+                    //给各个tab页的印字编号赋值
+                    $('#spliteDiv').find('.tab-pane').eq(0).find('.print_code').eq(0).val(result.FenQieInfo[0].CableCode);
+                    $('#spliteDiv').find('.tab-pane').eq(1).find('.print_code').eq(0).val(result.FenQieInfo[0].CableCode);
+                    $('#spliteDiv').find('.tab-pane').eq(2).find('.print_code').eq(0).val(result.FenQieInfo[0].CableCode);
+                    $('#spliteDiv').find('.tab-pane').eq(3).find('.print_code').eq(0).val(result.FenQieInfo[0].CableCode);
+                    $('#spliteDiv').find('.tab-pane').eq(4).find('.print_code').eq(0).val(result.FenQieInfo[0].CableCode);
+                    $('#spliteDiv').find('.tab-pane').eq(5).find('.print_code').eq(0).val(result.FenQieInfo[0].CableCode);
+                    $('#spliteDiv').find('.tab-pane').eq(6).find('.print_code').eq(0).val(result.FenQieInfo[0].CableCode);
+                }
+            },
+            error: function (error) {
+                android.endLoading();
+                closeLoading();
+                alert("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    //新增分切
+    function setAddSpliteBtn() {
+        $('#addSplite').click(function () {
+            var activeTabNum=0;
+            for(var i=0; i<$("#navDiv li").length;i++){
+                if($("#navDiv li").eq(i).is(":visible")){
+                    activeTabNum++;
+                }
+            }
+            if(activeTabNum==8){
+                return;
+            }
+            $('#navDiv li').removeClass('active');
+            $("#navDiv li").eq(activeTabNum-1).addClass('show');
+            $('#navDiv li').eq(activeTabNum-1).addClass('active');
+            $("#spliteDiv").find('.tab-pane').removeClass('show');
+            $('#spliteDiv').find('.tab-pane').addClass('hide');
+            $("#spliteDiv").find('.tab-pane').removeClass('active');
+            $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).removeClass('hide');
+            $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).addClass('show');
+            $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).addClass('active');
+            $("#spliteDiv").find('.tab-pane').find('button').attr('disabled',"true");
+            $("#spliteDiv").find('.tab-pane').find('button').css('background',"#cccccc");
+            $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).find('button').removeAttr("disabled");
+            $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).find('button').css('background',"#286090");
+            var pageStdCode = FGCode;
+            $('#spliteDiv').find('.tab-pane:last').find('.gl_code').eq(0).val(pageStdCode+"-"+numToLetter(activeTabNum+1));
+        });
+    }
+
+    //获取印字内容信息
+    function  getPrintContent() {
+        xgxx.ajax('OSheathRepair/GetYinZiList?callback=callback',{
+            success: function (result, status) {
+                android.endLoading();
+                var resultData=eval(result.Data);
+                android.print("resultData"+JSON.stringify(resultData));
+                var jsonData=[];
+                for(var i=0;i<resultData.length;i++){
+                    var obj=new Object();
+                    obj.value=resultData[i].Code;
+                    obj.text=resultData[i].Descs;
+                    jsonData.push(obj);
+                }
+                android.print(JSON.stringify(jsonData));
+                var PrintPicker = new mui.PopPicker();
+                PrintPicker.setData(jsonData);
+                $('.print_text').click(function (event) {
+                    var dom = $(this)[0];
+                    PrintPicker.show(function(items) {
+                        dom.value = items[0].text;
+                        dom.setAttribute("Code",items[0].value);
+                    });
+                });
+
+                getPanInfo();
+
+            },
+            error: function (error) {
+                android.endLoading();
+                android.print("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    //获取所有盘具信息
+    function getPanInfo() {
+        xgxx.ajax('OSheathRepair/GetPanJuList?callback=callback',{
+            success: function (result, status) {
+                android.endLoading();
+                android.print("=====&&&&&&====="+JSON.stringify(result));
+                var jsonData=[];
+                for(var i=0;i<result.PanJu.length;i++){
+                    var datas = {};
+                    datas['value'] = result.PanJu[i].MaterialCode;
+                    datas['text'] = result.PanJu[i].DefaultName;
+                    var objarray=[];
+                    for(var j=0;j<result.PanJuInfo.length;j++){
+                        if(result.PanJuInfo[j].MaterialCode==result.PanJu[i].MaterialCode){
+                            var item = {};
+                            item['value'] = result.PanJuInfo[j].MaterialCode;
+                            item['text'] = result.PanJuInfo[j].DefaultName+"("+result.PanJuInfo[j].PanDesc+")";
+                            item['GUID'] = result.PanJuInfo[j].GUID;
+                            objarray.push(item);
+                        }
+                    }
+                    datas['children'] = objarray;
+                    jsonData.push(datas);
+                }
+                android.print("=====!!!!!!====="+JSON.stringify(jsonData));
+                var cityPicker = new mui.PopPicker({
+                    layer: 2
+                });
+                cityPicker.setData(jsonData);
+                $('.gl_pan').click(function (event) {
+                    var dom = $(this)[0];
+                    cityPicker.show(function(items) {
+                        android.print(JSON.stringify(items));
+                        dom.value = items[1].text;
+                        dom.setAttribute("data-code",items[1].GUID);
+                    });
+                });
+                getMacInfo();
+            },
+            error: function (error) {
+                android.endLoading();
+                android.print("错误"+JSON.stringify(error));
+            }
+        });
+    }
+    //获取该工序对应的所有设备信息
+    function getMacInfo() {
+        xgxx.ajax('OSheathRepair/GetMacList?callback=callback&ProcessCode=sys006',{
+            success: function (result, status) {
+                android.endLoading();
+                android.print(JSON.stringify(result));
+                var jsonData=[];
+                for(var i=0;i<result.Process.length;i++){
+                    var datas = {};
+                    datas['value'] = result.Process[i].Code;
+                    datas['text'] = result.Process[i].ProcessName;
+                    var objarray=[];
+                    for(var j=0;j<result.MacInfo.length;j++){
+                        var item = {};
+                        item['value'] = result.MacInfo[j].Code;
+                        item['text'] = result.MacInfo[j].MacName+"("+result.MacInfo[j].Position+")";
+                        objarray.push(item);
+                    }
+                    datas['children'] = objarray;
+                    jsonData.push(datas);
+                }
+                var MacPicker = new mui.PopPicker({
+                    layer: 2
+                });
+                MacPicker.setData(jsonData);
+                $('#jitai_code').click(function (event) {
+                    var dom = $(this)[0];
+                    MacPicker.show(function(items) {
+                        android.print(JSON.stringify(items));
+                        dom.value = items[1].text;
+                        dom.setAttribute("Code",items[1].value);
+                        $('#MacCode').html(items[1].value);
+                    });
+                });
+            },
+            error: function (error) {
+                android.endLoading();
+                android.print("错误"+JSON.stringify(error));
+            }
+        });
+    }
+
+    //保存分切
+    function saveInfo() {
+        $('#saveBtn').click(function () {
+            android.print(1);
+            var activeTabNum=0;
+            for(var i=0; i<$("#navDiv li").length;i++){
+                if($("#navDiv li").eq(i).is(":visible")){
+                    activeTabNum++;
+                }
+            }
+            android.print("activeTabNum:"+activeTabNum);
+            var guid=$('#GUID').html();
+            android.print("guid:"+guid);
+            var mainData=[];
+            var objMain={};
+            var macCode = $('#MacCode').html();
+            android.print("Code:"+macCode);
+//            if(macCode=="" || macCode==null){
+//                android.showToast("请选择分切机台");
+//                return;
+//            }
+            objMain['GUID']=$('#GUID').html();
+            objMain['FGCode']=$('#FGCode').html();//成缆编号
+            objMain['MacCode']=macCode;//机台代码
+            objMain['Operator']="";//操作者编码
+            objMain['OperatorName']=myusername;//操作者姓名
+            objMain['OperatorTime']=$('#operatortime').val();//操作时间
+            objMain['Remark']="";//备注
+            mainData.push(objMain);
+            android.print("mainData"+JSON.stringify(mainData));
+
+            var ChildCutData=[];
+            var IsNewPan=$("#isNewPan").val();
+            for(var i=0;i<activeTabNum-1;i++){
+                var objChild={};
+                objChild['ID']=$("#spliteDiv").find('.tab-pane').eq(i).find('.id').eq(0).html();//id
+                objChild['CutGuid']=$('#GUID').html();//guid
+                objChild['FGCode']=$("#spliteDiv").find('.tab-pane').eq(i).find('.gl_code').eq(0).val();//缆芯编号
+                objChild['CutLen']=$("#spliteDiv").find('.tab-pane').eq(i).find('.fq_length').eq(0).val();//分切长度
+                objChild['FGMark']=$("#spliteDiv").find('.tab-pane').eq(i).find('.print_text').eq(0).val();//印字内容
+                objChild['CutType']=$("#spliteDiv").find('.tab-pane').eq(i).find('.effectSelect').eq(0).val();//有效性
+                objChild['IsNewPan']=$("#isNewPan").val();//有效性
+                objChild['SortId']=i+1;//序号
+                if(IsNewPan==1){
+                    objChild['ADirectB']=-1;
+                }else if(IsNewPan==2){
+                    objChild['ADirectB']=1;
+                }
+                var speedVal=$("#spliteDiv").find('.tab-pane').eq(i).find('.line_speed').eq(0).val();
+                objChild['Speed']=speedVal;//线速
+                objChild['DHJDangWei']="";
+                objChild['DHJYanShi']="";
+                objChild['DHJZhuangTai']="";
+                objChild['JieTouWeiZhi']="";
+                objChild['OutD']="";
+                objChild['BiHou']="";
+                objChild['CablePanCode']=$("#spliteDiv").find('.tab-pane').eq(i).find('.gl_pan').eq(0)[0].getAttribute("data-code");
+                objChild['GuangLanPanJuZk']="";//盘具状态
+                objChild['ShouPaiXianZK']="";//收排线状况
+                objChild['OSheathWaiGuan']="";//光缆外观
+                objChild['JianXiZK']="";//光缆与盘具间隙
+                objChild['OSheathWZX']="";//完整性
+                objChild['JieTouWaiGuan']="";//接头外观
+                objChild['NeiDuanYL']="";//内端预留
+                objChild['TargetStorage']  =  $('#spliteDiv').find('.tab-pane').last().find('.storage').eq(0).data("StorageCode");//目标仓库号
+                objChild['PringCount'] = "";//打印次数
+                objChild['Remark'] = $("#spliteDiv").find('.tab-pane').eq(i).find('.textarea').eq(0).html();//备注
+                objChild['CableCode']=$('#spliteDiv').find('.tab-pane').eq(i).find('.print_code').eq(0).val();
+                ChildCutData.push(objChild);
+            }
+            var objChild={};
+            objChild['ID']=$("#spliteDiv").find('.tab-pane').last().find('.id').eq(0).html();//id
+            objChild['CutGuid']=$('#GUID').html();//guid
+            objChild['FGCode']=$("#spliteDiv").find('.tab-pane').last().find('.gl_code').eq(0).val();//缆芯编号
+            objChild['CutLen']=$("#spliteDiv").find('.tab-pane').last().find('.fq_length').eq(0).val();//分切长度
+            objChild['FGMark']=$("#spliteDiv").find('.tab-pane').last().find('.print_text').eq(0).val();//印字内容
+            objChild['CutType']=$("#spliteDiv").find('.tab-pane').last().find('.effectSelect').eq(0).val();//有效性
+            objChild['IsNewPan']=$("#isNewPan").val();//有效性
+            objChild['SortId']=i+1;//序号
+            if(IsNewPan==1){
+                objChild['ADirectB']=-1;
+            }else if(IsNewPan==2){
+                objChild['ADirectB']=1;
+            }
+            var speedVal=$("#spliteDiv").find('.tab-pane').last().find('.line_speed').eq(0).val();
+            objChild['Speed']=$("#spliteDiv").find('.tab-pane').last().find('.line_speed').eq(0).val();//线速
+            objChild['DHJDangWei']="";
+            objChild['DHJYanShi']="";
+            objChild['DHJZhuangTai']="";
+            objChild['JieTouWeiZhi']="";
+            objChild['OutD']="";
+            objChild['BiHou']="";
+            objChild['CablePanCode']=$("#spliteDiv").find('.tab-pane').last().find('.gl_pan').eq(0)[0].getAttribute("data-code");
+            objChild['GuangLanPanJuZk']="";//盘具状态
+            objChild['ShouPaiXianZK']="";//收排线状况
+            objChild['OSheathWaiGuan']="";//光缆外观
+            objChild['JianXiZK']="";//光缆与盘具间隙
+            objChild['OSheathWZX']="";//完整性
+            objChild['JieTouWaiGuan']="";//接头外观
+            objChild['NeiDuanYL']="";//内端预留
+            objChild['TargetStorage']  =  $('#spliteDiv').find('.tab-pane').last().find('.storage').eq(0).data("StorageCode");//目标仓库号
+            objChild['PringCount'] = "";//打印次数
+            objChild['Remark'] = $("#spliteDiv").find('.tab-pane').last().find('.textarea').eq(0).html();//备注
+            objChild['CableCode']=$('#spliteDiv').find('.tab-pane').last().find('.print_code').eq(0).val();
+            ChildCutData.push(objChild);
+            android.print("===========ChildCutData========"+JSON.stringify(ChildCutData));
+            var savejson = JSON.stringify(mainData)+"^^"+JSON.stringify(ChildCutData);
+            var datas=new Object();
+            datas.callback='callback';
+            datas.guid=$('#GUID').html();
+            datas.savejson=savejson;
+            android.print(JSON.stringify(datas));
+            android.startLoading();
+            $.ajax({
+                url: xgxx.server_Domain+"OSheathRepair/SaveOSheathMRepair",
+                type: 'post',
+                data: datas,
+                crossDomain: true,
+                timeout: 50000,
+                success:function(data){
+                    android.endLoading();
+                    android.showToast("保存成功");
+                    android.print("保存成功啦："+JSON.stringify(data));
+                },
+                error:function(error){
+                    android.endLoading();
+                    android.print(JSON.stringify(error));
+                    var result = JSON.stringify(error.responseText);
+                    var index = result.indexOf("(");
+                    result = result.substring(index+1,result.length-2);
+                    result = result.replace(/\\/g,"");
+                    result = eval("["+result+"]");
+                    if(result[0].Code=="400"){
+                        android.showToast(result[0].Msg);
+                    }else if(result[0].Code=="200"){
+                        android.showToast(result[0].Msg);
+                    }
+                }
+            });
+        });
+    }
+
+    //分切完成
+    $('#finishBtn').click(function () {
+        var jitai_code=$('#jitai_code').val();//分切机台
+
+        if(jitai_code=="" || jitai_code==null){
+            android.showToast("分切机台不能为空");
+            return;
+        }
+
+        $('#myModal').on('shown.bs.modal', function (e) {
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
+            $(this).css('display', 'block');
+            var modalHeight=$(window).height() / 2 - $('#myModal .modal-dialog').height() / 2;
+            $(this).find('.modal-dialog').css({
+                'margin-top': modalHeight
+            });
+        }).modal({
+            keyboard:true//当按下esc键时，modal框消失
+        });
+    });
+
+    //确定分切完成
+    function sureFinishBtn() {
+        var guid=$('#GUID').html();
+        var ocode="";//操作者编码
+        var dt=$('#operatortime').val();
+        var username=$('#operatorname').val();
+        android.print(guid);
+        var url=xgxx.server_Domain+'OSheathRepair/GLRepairFenQieCompleted?callback=callback&Guid='+guid+'&UserCode=""&UserName='+username;
+        android.startLoading();
+        $.ajax(url,{
+            type:"get",
+            dataType:"text",
+            data:{
+            },
+            success: function (result, status) {
+                android.endLoading();
+                android.print(result);
+
+                var index = result.indexOf("(");
+                result = result.substring(index+1,result.length-1);
+                result = result.replace(/\\/g,"");
+                result = eval("["+result+"]");
+                if(result[0].Code=="400"){
+                    android.showToast(result[0].Msg);
+                }else if(result[0].Code=="200"){
+                    android.showToast(result[0].Msg);
+                    android.closeActivity();
+                }
+                $('#myModal').modal('hide');
+//                if(result=='callback({"Code":"200","Msg":"分切完成成功","Data":""})'){
+//                    android.showToast("分切完成");
+//                    android.closeActivity();
+//                }else{
+//                    android.showToast(result.Msg);
+//                }
+            },
+            error: function (error) {
+                android.endLoading();
+                android.print("错误"+JSON.stringify(error));
+            }
+        });
+
+
+//        xgxx.ajax('OSheathRepair/GLRepairFenQieCompleted?callback=callback',{
+//            data:{
+//                GUID:guid,
+//                UserCode:ocode,
+//                UserName:username
+//            },
+//            success: function (result, status) {
+//                android.endLoading();
+//                android.print(JSON.stringify(result));
+//                if(result.Code=="200"){
+//                    android.showToast("分切完成");
+//                    android.closeActivity();
+//                }else{
+//                    android.showToast(result.Msg);
+//                }
+//            },
+//            error: function (error) {
+//                android.endLoading();
+//                android.print(JSON.stringify(error));
+//            }
+//        });
+    }
+
+    //清除分切信息
+    function clearInfo() {
+        $('#clearBtn').click(function () {
+            var guid=$('#GUID').html();
+            xgxx.ajax('OSheathRepair/ClearOSheathMRepair?callback=callback',{
+                data:{
+                    Guid:guid
+                },
+                success: function (result, status) {
+                    android.endLoading();
+                    if(result.Code=="200"){
+                        android.showToast("数据清除完成");
+                        $('#navDiv li').removeClass('show');
+                        $('#navDiv li').addClass('hide');
+                        $('#navDiv li:last').addClass('show');
+                        $('#navDiv li:last').addClass('active');
+                        $("#spliteDiv").find('.tab-pane').removeClass('show');
+                        $('#spliteDiv').find('.tab-pane').addClass('hide');
+                        $("#spliteDiv").find('.tab-pane').removeClass('active');
+                        $("#spliteDiv").find('.tab-pane:last').addClass('show');
+                        $("#spliteDiv").find('.tab-pane:last').removeClass('hide');
+                        $("#spliteDiv").find('.tab-pane:last').addClass('active');
+                        clearData();
+                        window.location.reload();//刷新当前页面.
+                    }else{
+                        android.showToast(result.Msg);
+                    }
+                },
+                error: function (error) {
+                    android.endLoading();
+                    android.print(JSON.stringify(error));
+                }
+            });
+        });
+    }
+
+    //清除所有页面的输入框值
+    function clearData() {
+        for(var i=0;i<8;i++){
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.id').eq(0).html("");//id
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.CutGuid').eq(0).html("");//guid
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.gl_code').eq(0).val("");//缆芯编号
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.fq_length').eq(0).val("");//分切长度
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.effectSelect').eq(0).val("1");//有效性
+            $("#isNewPan").val("2");//有效性
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.line_speed').eq(0).val("");//线速
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.storage').eq(0).val("");//线速
+            $('#spliteDiv').find('.tab-pane').eq(i).find('.storage').eq(0).data("StorageCode","");//目标仓库号
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.textarea').eq(0).val("");//备注
+            $("#spliteDiv").find('.tab-pane').eq(i).find('.gl_pan').eq(0).val("");//盘号
+            $("#StateView").val("未开始");
+        }
+    }
+
+    function numToLetter(num) {
+        switch (num) {
+            case 1:
+                return "A"
+                break;
+            case 2:
+                return "B"
+                break;
+            case 3:
+                return "C"
+                break;
+            case 4:
+                return "D"
+                break;
+            case 5:
+                return "E"
+                break;
+            case 6:
+                return "F"
+                break;
+            case 7:
+                return "G"
+                break;
+            case 8:
+                return "H"
+                break;
+        }
+    }
+    function setActiveTab() {
+        var activeTabNum=0;
+        for(var i=0; i<$("#navDiv li").length;i++){
+            if($("#navDiv li").eq(i).is(":visible")){
+                activeTabNum++;
+            }
+        }
+        if(activeTabNum==8){
+            return;
+        }
+        activeTabNum = activeTabNum-1;
+        $('#navDiv li').removeClass('active');
+        $("#navDiv li").eq(activeTabNum-1).addClass('show');
+        $('#navDiv li').eq(activeTabNum-1).addClass('active');
+        $("#spliteDiv").find('.tab-pane').removeClass('show');
+        $('#spliteDiv').find('.tab-pane').addClass('hide');
+        $("#spliteDiv").find('.tab-pane').removeClass('active');
+        $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).removeClass('hide');
+        $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).addClass('show');
+        $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).addClass('active');
+        $("#spliteDiv").find('.tab-pane').find('button').attr('disabled',"true");
+        $("#spliteDiv").find('.tab-pane').find('button').css('background',"#cccccc");
+        $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).find('button').removeAttr("disabled");
+        $("#spliteDiv").find('.tab-pane').eq(activeTabNum-1).find('button').css('background',"#286090");
+        var pageStdCode = $('#spliteDiv').find('.tab-pane:last').find('.gl_code').eq(0).val();
+        $('#spliteDiv').find('.tab-pane:last').find('.gl_code').eq(0).val(pageStdCode.substring(0,pageStdCode.length-1)+numToLetter(activeTabNum+1));
+    }
+
+</script>
+</body>
+</html>
